@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import ordersRouter from "./routes/orders";
+import authRouter from "./routes/auth";
 import UserSeeder from "./seeders/user-seeder";
 import Utils from "./utils/utils";
 
@@ -16,6 +17,7 @@ UserSeeder.adminSeed().then(() => console.log("Admin seeded"));
 
 // Routes
 app.use("/api/orders", ordersRouter);
+app.use("/api/auth", authRouter);
 
 // Health check endpoint
 app.get("/health", (_req, res) => {

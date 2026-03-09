@@ -1,7 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { celebrate } from "celebrate";
-import { Order } from "../../../shared/types";
-import { mockOrders } from "../data/mockOrders";
 import OrderController from "../controllers/OrderController";
 import {
   listOrdersQuerySchema,
@@ -9,13 +7,9 @@ import {
   createOrderBodySchema,
   updateOrderStatusSchema,
 } from "../validations/OrderValidationSchema";
+import { authMiddleware } from "../middleware/auth-middleware";
 
 const router = Router();
-
-// TODO: Implement your data storage solution here
-// This starter uses in-memory storage with mock data
-// @ts-expect-error - This variable is for candidates to use when implementing endpoints
-let orders: Order[] = [...mockOrders];
 
 /**
  * GET /api/orders
@@ -24,6 +18,7 @@ let orders: Order[] = [...mockOrders];
  */
 router.get(
   "/",
+  authMiddleware,
   celebrate(listOrdersQuerySchema),
   async (_req: Request, res: Response, next: NextFunction) => {
     const { statusCode, ...allOrders } = await OrderController.getAllOrders(_req, res, next);
