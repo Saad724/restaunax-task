@@ -1,5 +1,3 @@
-import { Request, Response, NextFunction, RequestHandler } from "express";
-
 type SendResponse<T> = {
   success: boolean;
   data: T | null;
@@ -21,25 +19,8 @@ const sendResponse = <T>(
   };
 };
 
-const wrapAsync = (
-  func: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => void | Promise<any>,
-): RequestHandler => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      await func(req, res, next);
-    } catch (error) {
-      next(error);
-    }
-  };
-};
-
 const Utils = {
   sendResponse,
-  wrapAsync,
 };
 
 export default Utils;

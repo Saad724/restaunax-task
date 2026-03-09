@@ -9,7 +9,7 @@ export interface OrderItem {
   name: string;
   quantity: number;
   price: number; // float
-  createdAt: string; // ISO string
+  createdAt: Date; // ISO string
   orderId?: string;  // optional link to order
 }
 
@@ -21,7 +21,7 @@ export interface Order {
   status: OrderStatus;
   items: OrderItem[];
   total: number;      // float
-  createdAt: string;  // ISO 8601 string
+  createdAt: Date;  // ISO 8601 string
 }
 
 /** API Response types */

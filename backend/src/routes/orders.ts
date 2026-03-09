@@ -1,6 +1,7 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { Order } from '../../../shared/types';
 import { mockOrders } from '../data/mockOrders';
+import OrderController from '../controllers/OrderController';
 
 const router = Router();
 
@@ -14,13 +15,13 @@ let orders: Order[] = [...mockOrders];
  * List all orders, optionally filtered by status
  * Query params: ?status=pending (optional)
  */
-router.get('/', (_req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   // TODO: Implement this endpoint
   // 1. Get the status query parameter if provided
   // 2. Filter orders by status if query param exists
   // 3. Return the filtered/all orders
-
-  res.status(501).json({ error: 'Not implemented yet' });
+  const {statusCode, ...allOrders} = await OrderController.getAllOrders(_req, res, next);
+  res.status(statusCode).json(allOrders);
 });
 
 /**

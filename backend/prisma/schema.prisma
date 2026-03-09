@@ -23,6 +23,7 @@ model User {
   role         UserRoles
   rewardPoints Int       @default(0)
   createdAt    DateTime  @default(now())
+  orders       Order[]
 
   @@map("users")
 }
@@ -39,6 +40,8 @@ model Order {
   status    OrderStatus @default(pending)
   total     Float
   createdAt DateTime    @default(now())
+  user      User        @relation(fields: [userId], references: [id])
+  userId    String
 
   @@map("orders")
 }
@@ -61,7 +64,7 @@ model OrderItem {
   quantity  Int
   price     Float
   order     Order?   @relation(fields: [orderId], references: [id])
-  orderId   String?
+  orderId   String
   createdAt DateTime @default(now())
 
   @@map("order_items")
