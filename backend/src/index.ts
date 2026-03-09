@@ -1,9 +1,9 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { errors as celebrateErrors } from "celebrate";
 import ordersRouter from "./routes/orders";
 import UserSeeder from "./seeders/user-seeder";
+import Utils from "./utils/utils";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,7 +23,7 @@ app.get("/health", (_req, res) => {
 });
 
 // Celebrate validation error handler (must be after routes)
-app.use(celebrateErrors());
+app.use(Utils.errorHandler);
 
 // Start server
 app.listen(PORT, () => {
