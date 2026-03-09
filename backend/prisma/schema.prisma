@@ -37,7 +37,7 @@ model Order {
   orderType OrderType   @default(delivery)
   items     OrderItem[]
   status    OrderStatus @default(pending)
-  total     Int
+  total     Float
   createdAt DateTime    @default(now())
 
   @@map("orders")
@@ -59,7 +59,7 @@ model OrderItem {
   id        String   @id @default(uuid())
   name      String
   quantity  Int
-  price     Int
+  price     Float
   order     Order?   @relation(fields: [orderId], references: [id])
   orderId   String?
   createdAt DateTime @default(now())
