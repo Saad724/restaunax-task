@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Input from "../../components/Input/Input";
@@ -28,6 +28,7 @@ const initialValues: LoginFormValues = {
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleSubmit = async (
     values: LoginFormValues,
@@ -56,11 +57,18 @@ const Login = () => {
     <Container maxWidth="xs">
       <Box sx={{ py: 4 }}>
         <AppCard>
-          <Stack sx={{ marginBlock: '20px'}}>
-            <Typography variant="h6" component="h1">
-              Welcome Back
+          <Stack sx={{ marginBlock: "20px" }} gap={2}>
+            <Typography variant="h5">
+              {import.meta.env.VITE_APP_NAME}
             </Typography>
-            <Typography color={'text.disabled'} variant="subtitle2">Sign in to continue to your account.</Typography>
+            <Box>
+              <Typography variant="h6" component="h1" color={"primary"}>
+                Welcome Back
+              </Typography>
+              <Typography color={"text.disabled"} variant="subtitle2">
+                Sign in to continue to your account.
+              </Typography>
+            </Box>
           </Stack>
           <Formik
             initialValues={initialValues}
@@ -106,7 +114,15 @@ const Login = () => {
                 </PrimaryButton>
                 <Typography variant="body2" align="center">
                   Don&apos;t have an account?{" "}
-                  <Link to="/register">Register</Link>
+                  <Link
+                    to="/register"
+                    style={{
+                      color: theme.palette.primary.main,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Register
+                  </Link>
                 </Typography>
               </form>
             )}

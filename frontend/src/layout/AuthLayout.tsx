@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import { RootState } from "../store/store";
-import { Stack } from "@mui/material";
+import { Stack, useTheme } from "@mui/material";
 
 const AuthLayout = () => {
+  const theme = useTheme();
   const { userInfo } = useSelector((state: RootState) => state.auth);
 
   if (userInfo) {
@@ -11,7 +12,13 @@ const AuthLayout = () => {
   }
 
   return (
-    <Stack justifyContent={'center'} sx={{ minHeight: '100vh', backgroundColor: '#f7f7f7'}}>
+    <Stack
+      justifyContent={"center"}
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: theme.palette.customBackground.main,
+      }}
+    >
       <Outlet />
     </Stack>
   );

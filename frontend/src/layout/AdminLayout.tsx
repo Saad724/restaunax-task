@@ -7,22 +7,25 @@ import {
   ListItemText,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import PrimaryButton from "../components/PrimaryButton/PrimaryButton";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slice/AuthSlice";
+import AppCard from "../components/AppCard/AppCard";
 
 const DRAWER_WIDTH = 240;
 
 const AdminLayout = () => {
   const location = useLocation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const theme = useTheme();
 
   const navItems = [{ label: "Order Managment", path: "/" }];
 
   const logoutHandler = () => {
-    dispatch(logout())
-  }
+    dispatch(logout());
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -46,7 +49,7 @@ const AdminLayout = () => {
           </Stack>
         </Box>
         <Stack
-          sx={{ paddingBottom: "20px", paddingInline: '20px', flex: 1 }}
+          sx={{ paddingBottom: "20px", paddingInline: "20px", flex: 1 }}
           justifyContent={"space-between"}
         >
           <List>
@@ -65,15 +68,23 @@ const AdminLayout = () => {
         </Stack>
       </Drawer>
       <Box
-        component="main"
         sx={{
+          backgroundColor: theme.palette.customBackground.main,
           p: 3,
           minHeight: "100vh",
-          width: '100%',
-          maxWidth: '2560px'
+          width: "100%",
         }}
       >
-        <Outlet />
+        <Box
+          component="main"
+          sx={{
+            maxWidth: "2560px",
+          }}
+        >
+          <AppCard>
+            <Outlet />
+          </AppCard>
+        </Box>
       </Box>
     </Box>
   );

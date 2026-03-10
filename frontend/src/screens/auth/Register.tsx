@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Input from "../../components/Input/Input";
@@ -35,6 +35,7 @@ const initialValues: RegisterFormValues = {
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleSubmit = async (
     values: RegisterFormValues,
@@ -45,7 +46,7 @@ const Register = () => {
         name: values.name,
         email: values.email,
         password: values.password,
-        phone: values.phone,
+        phone: `+${values.phone}`,
       });
       dispatch(
         login({
@@ -68,13 +69,18 @@ const Register = () => {
     <Container maxWidth="xs">
       <Box sx={{ py: 4 }}>
         <AppCard>
-          <Stack sx={{ marginBlock: "20px" }}>
-            <Typography variant="h6" component="h1">
-              Create an Account
+          <Stack sx={{ marginBlock: "20px" }} gap={2}>
+            <Typography variant="h5">
+              {import.meta.env.VITE_APP_NAME}
             </Typography>
-            <Typography color={"text.disabled"} variant="subtitle2">
-              Sign up to get started.
-            </Typography>
+            <Box>
+              <Typography variant="h6" component="h1" color={"primary"}>
+                Create an Account
+              </Typography>
+              <Typography color={"text.disabled"} variant="subtitle2">
+                Sign up to get started.
+              </Typography>
+            </Box>
           </Stack>
           <Formik
             initialValues={initialValues}
@@ -138,7 +144,10 @@ const Register = () => {
                   {formik.isSubmitting ? "Creating account..." : "Register"}
                 </PrimaryButton>
                 <Typography variant="body2" align="center">
-                  Already have an account? <Link to="/">Login</Link>
+                  Already have an account?{" "}
+                  <Link to="/" style={{ color: theme.palette.primary.main, textDecoration: 'none' }}>
+                    Login
+                  </Link>
                 </Typography>
               </Form>
             )}

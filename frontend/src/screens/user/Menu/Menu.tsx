@@ -47,7 +47,7 @@ const MenuCard = ({ item }: MenuCardProps) => {
   };
 
   return (
-    <AppCard sx={{ flex: 1, minWidth: 200 }}>
+    <AppCard sx={{ flex: 1, minWidth: 300, maxWidth: 300 }}>
       <Stack gap={2}>
         <img
           src={item?.image || DEFAULT_IMAGE}
