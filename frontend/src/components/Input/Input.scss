@@ -1,0 +1,60 @@
+.custom_text-field,
+.custom_select-field {
+  margin-block: 7px !important;
+
+  label {
+    top: -2px
+  }
+  .clickable-icon {
+    cursor: pointer;
+  }
+
+  .MuiOutlinedInput-root {
+    height: 50px;
+    border-radius: 5px !important;
+  }
+}
+
+.phone-input-field-wrapper {
+  .selected-flag {
+    border-top-left-radius: 15px !important;
+    border-bottom-left-radius: 15px !important;
+  }
+  &.theme-dark {
+    .flag-dropdown {
+      background-color: #333;
+      .selected-flag {
+        background-color: #333 !important;
+      }
+      .country-list {
+        background-color: #212121;
+        .country {
+          &:hover {
+            background-color: #414141;
+          }
+        }
+        .active {
+          background-color: #333 !important;
+        }
+      }
+    }
+  }
+
+  .react-tel-input {
+    margin-block: 7px !important;
+    input {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 50px !important;
+      min-height: 50px !important;
+      border-radius: 5px !important;
+    }
+    .flag-dropdown {
+      border-top-left-radius: 5px !important;
+      border-bottom-left-radius: 5px !important;
+      height: 100% !important;
+      max-height: 50px !important;
+      min-height: 50px !important;
+    }
+  }
+}

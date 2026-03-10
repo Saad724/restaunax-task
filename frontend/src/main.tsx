@@ -5,6 +5,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { Provider } from "react-redux";
 import { persistor, store } from "./store/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { ToastContainer } from "react-toastify";
 
 const theme = createTheme({
   palette: {
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <App />
         </PersistGate>
       </Provider>
+      <ToastContainer />
     </ThemeProvider>
   </React.StrictMode>,
 );

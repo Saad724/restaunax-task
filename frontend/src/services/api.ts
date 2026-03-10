@@ -1,7 +1,14 @@
-import { Order, OrderStatus } from '../../../shared/types';
+import { Order, OrderStatus } from "../../../shared/types";
+import axiosWrapper from "../api/ApiWrapper";
 
 // API base URL - candidates will use this when implementing their API calls
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+interface ApiResponse {
+  success: boolean;
+  data: LoginResponse;
+  message: string;
+}
 
 /**
  * API service for interacting with the backend
@@ -20,7 +27,7 @@ export const ordersApi = {
     // 4. Return the parsed JSON response
     // Example: const url = status ? `${API_BASE_URL}/orders?status=${status}` : `${API_BASE_URL}/orders`;
 
-    throw new Error('Not implemented yet');
+    throw new Error("Not implemented yet");
   },
 
   /**
@@ -33,7 +40,7 @@ export const ordersApi = {
     // 3. Return the parsed JSON response
     // Example: const response = await fetch(`${API_BASE_URL}/orders/${id}`);
 
-    throw new Error('Not implemented yet');
+    throw new Error("Not implemented yet");
   },
 
   /**
@@ -47,13 +54,13 @@ export const ordersApi = {
     // 4. Return the updated order
     // Example: fetch(`${API_BASE_URL}/orders/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) })
 
-    throw new Error('Not implemented yet');
+    throw new Error("Not implemented yet");
   },
 
   /**
    * Create a new order (for testing)
    */
-  async createOrder(_order: Omit<Order, 'id' | 'createdAt'>): Promise<Order> {
+  async createOrder(_order: Omit<Order, "id" | "createdAt">): Promise<Order> {
     // TODO: Implement this function
     // 1. Make a POST request to /api/orders
     // 2. Send the order data in the request body
@@ -61,9 +68,47 @@ export const ordersApi = {
     // 4. Return the created order
     // Example: fetch(`${API_BASE_URL}/orders`, { method: 'POST', body: JSON.stringify(order) })
 
-    throw new Error('Not implemented yet');
+    throw new Error("Not implemented yet");
   },
 };
 
-// Note: API_BASE_URL is available for use in the functions above
-console.log('API configured for:', API_BASE_URL);
+export interface LoginResponse {
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+    phone: string;
+    role: string;
+  };
+  token: string;
+}
+
+export const authApi = {
+  async login(email: string, password: string): Promise<LoginResponse> {
+    const response = (await axiosWrapper("post", `${API_BASE_URL}/auth/login`, {
+      email,
+      password,
+    })) as ApiResponse;
+    if (!response.success) {
+      throw new Error(response.message || "Login failed");
+    }
+    return response.data;
+  },
+
+  async register(body: {
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+  }): Promise<LoginResponse> {
+    const response = (await axiosWrapper(
+      "post",
+      `${API_BASE_URL}/auth/register`,
+      body,
+    )) as ApiResponse;
+    if (!response.success) {
+      throw new Error(response.message || "Registration failed");
+    }
+    return response.data;
+  },
+};
