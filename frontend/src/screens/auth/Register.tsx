@@ -58,7 +58,7 @@ const Register = () => {
           token: data.token,
         }),
       );
-      navigate("/menu");
+      navigate("/");
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Registration failed");
     }
@@ -69,10 +69,10 @@ const Register = () => {
       <Box sx={{ py: 4 }}>
         <AppCard>
           <Stack sx={{ marginBlock: "20px" }}>
-            <Typography variant="h5" component="h1">
+            <Typography variant="h6" component="h1">
               Create an Account
             </Typography>
-            <Typography color={"text.disabled"}>
+            <Typography color={"text.disabled"} variant="subtitle2">
               Sign up to get started.
             </Typography>
           </Stack>

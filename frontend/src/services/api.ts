@@ -1,12 +1,12 @@
-import { Order, OrderStatus } from "../../../shared/types";
+import { Order, OrderItem, OrderStatus } from "../../../shared/types";
 import axiosWrapper from "../api/ApiWrapper";
 
 // API base URL - candidates will use this when implementing their API calls
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-interface ApiResponse {
+interface ApiResponse<T> {
   success: boolean;
-  data: LoginResponse;
+  data: T;
   message: string;
 }
 
@@ -60,15 +60,19 @@ export const ordersApi = {
   /**
    * Create a new order (for testing)
    */
-  async createOrder(_order: Omit<Order, "id" | "createdAt">): Promise<Order> {
-    // TODO: Implement this function
-    // 1. Make a POST request to /api/orders
-    // 2. Send the order data in the request body
-    // 3. Handle validation errors
-    // 4. Return the created order
-    // Example: fetch(`${API_BASE_URL}/orders`, { method: 'POST', body: JSON.stringify(order) })
-
-    throw new Error("Not implemented yet");
+  async createOrder(orderType: string, items: OrderItem[]): Promise<Order> {
+    const response = (await axiosWrapper("post", `${API_BASE_URL}/orders`, {
+      orderType: orderType,
+      items: items?.map((item) => ({
+        name: item?.name,
+        quantity: item?.quantity,
+        price: item?.price,
+      })),
+    })) as ApiResponse<Order>;
+    if (!response.success) {
+      throw new Error(response.message || "Order not created");
+    }
+    return response.data;
   },
 };
 
@@ -88,7 +92,7 @@ export const authApi = {
     const response = (await axiosWrapper("post", `${API_BASE_URL}/auth/login`, {
       email,
       password,
-    })) as ApiResponse;
+    })) as ApiResponse<LoginResponse>;
     if (!response.success) {
       throw new Error(response.message || "Login failed");
     }
@@ -105,7 +109,7 @@ export const authApi = {
       "post",
       `${API_BASE_URL}/auth/register`,
       body,
-    )) as ApiResponse;
+    )) as ApiResponse<LoginResponse>;
     if (!response.success) {
       throw new Error(response.message || "Registration failed");
     }

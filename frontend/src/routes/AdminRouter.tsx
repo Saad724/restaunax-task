@@ -6,7 +6,6 @@ const AdminRouter = () => {
     <Routes>
       <Route path="/" element={<AdminLayout />}>
         <Route index element={<>Admin Home</>} />
-        <Route path="*" element={<>Admin Not Found</>} />
       </Route>
     </Routes>
   );

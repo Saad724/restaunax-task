@@ -46,7 +46,7 @@ const Login = () => {
           token: data.token,
         }),
       );
-      navigate("/menu");
+      navigate("/");
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Login failed");
     }
@@ -57,10 +57,10 @@ const Login = () => {
       <Box sx={{ py: 4 }}>
         <AppCard>
           <Stack sx={{ marginBlock: '20px'}}>
-            <Typography variant="h5" component="h1">
+            <Typography variant="h6" component="h1">
               Welcome Back
             </Typography>
-            <Typography color={'text.disabled'}>Sign in to continue to your account.</Typography>
+            <Typography color={'text.disabled'} variant="subtitle2">Sign in to continue to your account.</Typography>
           </Stack>
           <Formik
             initialValues={initialValues}

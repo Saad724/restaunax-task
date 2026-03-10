@@ -1,20 +1,13 @@
 import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute";
-import Login from "../screens/auth/Login";
-import Register from "../screens/auth/Register";
-import AuthLayout from "../layout/AuthLayout";
+import Menu from "../screens/user/Menu/Menu";
+import UserLayout from "../layout/UserLayout";
 
 const UserRouter = () => {
   return (
     <Routes>
-      <Route path="/" element={<AuthLayout />}>
-        <Route index element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <Route path="/" element={<UserLayout />}>
+        <Route index element={<Menu />} />
       </Route>
-      <Route element={<ProtectedRoute />}>
-        <Route path="/menu" element={<>Menu</>} />
-      </Route>
-      <Route path="*" element={<>User Not Found</>} />
     </Routes>
   );
 };
