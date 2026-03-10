@@ -8,13 +8,6 @@ import {
 } from "../../../shared/types";
 import { AuthRequest } from "../types/types";
 
-const VALID_STATUSES: OrderStatus[] = [
-  "pending",
-  "preparing",
-  "ready",
-  "delivered",
-];
-
 const getAllOrders = async (
   req: Request,
   _res: Response,
@@ -84,9 +77,6 @@ const updateOrderStatus = async (
   try {
     const { id } = req.params;
     const { status } = req.body as UpdateOrderStatusRequest;
-    if (!status || !VALID_STATUSES.includes(status)) {
-      return Utils.sendResponse(false, null, 400, "Invalid or missing status");
-    }
     const order = await OrderService.updateOrderStatus(id, status);
     if (order === null) {
       return Utils.sendResponse(false, null, 404, "Order not found");

@@ -39,7 +39,7 @@ const comparePassword = async (plain: string, hashed: string): Promise<boolean> 
 };
 
 const signToken = (userId: string): string => {
-  return jwt.sign({ sub: userId }, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ sub: userId }, JWT_SECRET, { expiresIn: "1h" });
 };
 
 const register = async (input: RegisterInput): Promise<LoginResult> => {
