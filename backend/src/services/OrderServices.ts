@@ -8,6 +8,7 @@ const getAllOrders = async (status?: OrderStatus | undefined): Promise<Order[]> 
     where: status ? { status } : {},
     include: {
       items: true,
+      user: true
     },
   });
   return allOrders;

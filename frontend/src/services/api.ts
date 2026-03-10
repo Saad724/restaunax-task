@@ -19,15 +19,15 @@ export const ordersApi = {
   /**
    * Fetch all orders, optionally filtered by status
    */
-  async getOrders(_status?: OrderStatus): Promise<Order[]> {
-    // TODO: Implement this function
-    // 1. Build the URL with optional status query param
-    // 2. Make a GET request to /api/orders
-    // 3. Handle errors appropriately
-    // 4. Return the parsed JSON response
-    // Example: const url = status ? `${API_BASE_URL}/orders?status=${status}` : `${API_BASE_URL}/orders`;
-
-    throw new Error("Not implemented yet");
+  async getOrders(status?: OrderStatus): Promise<Order[]> {
+    const url = status
+      ? `${API_BASE_URL}/orders?status=${status}`
+      : `${API_BASE_URL}/orders`;
+    const response = (await axiosWrapper("get", url)) as ApiResponse<Order[]>;
+    if (!response.success || !Array.isArray(response.data)) {
+      throw new Error(response.message || "Failed to fetch orders");
+    }
+    return response.data;
   },
 
   /**
@@ -46,15 +46,14 @@ export const ordersApi = {
   /**
    * Update an order's status
    */
-  async updateOrderStatus(_id: string, _status: OrderStatus): Promise<Order> {
-    // TODO: Implement this function
-    // 1. Make a PATCH request to /api/orders/:id
-    // 2. Send the new status in the request body
-    // 3. Handle errors appropriately
-    // 4. Return the updated order
-    // Example: fetch(`${API_BASE_URL}/orders/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) })
-
-    throw new Error("Not implemented yet");
+  async updateOrderStatus(id: string, status: OrderStatus): Promise<Order> {
+    const response = (await axiosWrapper("patch", `${API_BASE_URL}/orders/${id}`, {
+      status,
+    })) as ApiResponse<Order>;
+    if (!response.success) {
+      throw new Error(response.message || "Failed to update order status");
+    }
+    return response.data;
   },
 
   /**
