@@ -1,14 +1,17 @@
 import { Box, Stack, Typography, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { useDispatch } from "react-redux";
 import { itemsMockData } from "../../../utils/mockData";
 import AppCard from "../../../components/AppCard/AppCard";
 import { OrderItem } from "../../../../../shared/types";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
-import { ordersApi } from "../../../services/api";
+import { addToCart } from "../../../store/slice/CartSlice";
 import { useState } from "react";
-import Loader from "../../../components/Loader/Loader";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartFlatbed } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const MIN_QUANTITY = 1;
 const DEFAULT_IMAGE =
@@ -19,8 +22,8 @@ interface MenuCardProps {
 }
 
 const MenuCard = ({ item }: MenuCardProps) => {
+  const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(MIN_QUANTITY);
-  const [isOrdering, setIsOrdering] = useState(false);
 
   const lineTotal = (item?.price ?? 0) * quantity;
 
@@ -32,18 +35,17 @@ const MenuCard = ({ item }: MenuCardProps) => {
     setQuantity((prev) => prev + 1);
   };
 
-  const orderHandler = async () => {
-    try {
-      setIsOrdering(true);
-      const items: OrderItem[] = [{ ...item, quantity }];
-      const orderType = "delivery";
-      await ordersApi.createOrder(orderType, items);
-      toast.success("Order created successfully!");
-    } catch (error: unknown) {
-      throw new Error(error instanceof Error ? error.message : "Order failed");
-    } finally {
-      setIsOrdering(false);
-    }
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        id: item.id,
+        name: item.name,
+        quantity,
+        price: item.price,
+        image: item.image,
+      }),
+    );
+    toast.success("Added to cart");
   };
 
   return (
@@ -91,10 +93,9 @@ const MenuCard = ({ item }: MenuCardProps) => {
         <PrimaryButton
           variant="outlined"
           sx={{ width: "100%" }}
-          onClick={orderHandler}
-          disabled={isOrdering}
+          onClick={handleAddToCart}
         >
-          {isOrdering ? <Loader /> : "Order"}
+          Add to cart
         </PrimaryButton>
       </Stack>
     </AppCard>
@@ -102,14 +103,31 @@ const MenuCard = ({ item }: MenuCardProps) => {
 };
 
 const Menu = () => {
+  const navigate = useNavigate()
   return (
     <Stack>
-      <Typography variant="h5" component="h1">
-        Order
-      </Typography>
-      <Typography color={"text.disabled"} variant="subtitle2">
-        Order your favorite food now
-      </Typography>
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+      >
+        <Box>
+          <Typography variant="h5" component="h1">
+            Order
+          </Typography>
+          <Typography color={"text.disabled"} variant="subtitle2">
+            Order your favorite food now
+          </Typography>
+        </Box>
+        <IconButton
+          size="small"
+          onClick={() => navigate('/cart')}
+          aria-label="View cart items"
+          color="primary"
+        >
+          <FontAwesomeIcon icon={faCartFlatbed} />
+        </IconButton>
+      </Stack>
       <Stack
         direction={"row"}
         gap={2}

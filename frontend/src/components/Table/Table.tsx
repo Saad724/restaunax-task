@@ -19,9 +19,10 @@ interface TableInterface {
   data: Array<any>;
   columns: Array<any>;
   context?: Record<string, unknown>;
+  pagination?: boolean
 }
 
-const Table: React.FC<TableInterface> = ({ data, columns, context }) => {
+const Table: React.FC<TableInterface> = ({ data, columns, context, pagination = true }) => {
   const isSmallScreen = window.innerWidth <= 1200;
   const [quickFilterText, setQuickFilterText] = useState("");
   const paginationPageSize = 10;
@@ -83,7 +84,7 @@ const Table: React.FC<TableInterface> = ({ data, columns, context }) => {
         theme={theme}
         columnDefs={columns}
         context={context}
-        pagination
+        pagination={pagination}
         paginationPageSize={paginationPageSize}
         paginationPageSizeSelector={[
           paginationPageSize,
