@@ -9,7 +9,7 @@ import {
 import { AgGridReact } from "ag-grid-react";
 
 import "./Table.scss";
-import { Box, InputAdornment, TextField } from "@mui/material";
+import { Box, InputAdornment, Stack, TextField } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -19,10 +19,17 @@ interface TableInterface {
   data: Array<any>;
   columns: Array<any>;
   context?: Record<string, unknown>;
-  pagination?: boolean
+  pagination?: boolean;
+  tableFilters?: React.ReactNode;
 }
 
-const Table: React.FC<TableInterface> = ({ data, columns, context, pagination = true }) => {
+const Table: React.FC<TableInterface> = ({
+  data,
+  columns,
+  context,
+  pagination = true,
+  tableFilters,
+}) => {
   const isSmallScreen = window.innerWidth <= 1200;
   const [quickFilterText, setQuickFilterText] = useState("");
   const paginationPageSize = 10;
@@ -62,23 +69,24 @@ const Table: React.FC<TableInterface> = ({ data, columns, context, pagination = 
 
   return (
     <Box>
-      <TextField
-        placeholder="Search..."
-        size="small"
-        value={quickFilterText}
-        onChange={(e) => setQuickFilterText(e.target.value)}
-        sx={{
-          mb: 2,
-        }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <FontAwesomeIcon icon={faSearch} style={{ fontSize: 14 }} />
-            </InputAdornment>
-          ),
-        }}
-        inputProps={{ "aria-label": "Search table" }}
-      />
+      <Stack direction="row" alignItems="center" gap={2} sx={{ mb: 2 }}>
+        <TextField
+          placeholder="Search..."
+          size="small"
+          value={quickFilterText}
+          onChange={(e) => setQuickFilterText(e.target.value)}
+          sx={{ flex: 1, maxWidth: 300 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <FontAwesomeIcon icon={faSearch} style={{ fontSize: 14 }} />
+              </InputAdornment>
+            ),
+          }}
+          inputProps={{ "aria-label": "Search table" }}
+        />
+        {tableFilters}
+      </Stack>
       <AgGridReact
         rowData={data}
         theme={theme}

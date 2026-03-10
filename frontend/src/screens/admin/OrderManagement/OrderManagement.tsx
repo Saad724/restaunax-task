@@ -5,15 +5,14 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  Table as MuiTable,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Typography,
   Button,
   Stack,
   Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -21,7 +20,7 @@ import Table from "../../../components/Table/Table";
 import Input from "../../../components/Input/Input";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import { formatCurrency, formatDate } from "../../../utils/utils";
-import { OrderItem, OrderStatus } from "../../../../../shared/types";
+import { OrderItem, OrderStatus, OrderType } from "../../../../../shared/types";
 import { Order } from "../../../../../shared/types";
 import { ordersApi } from "../../../services/api";
 import { toast } from "react-toastify";
@@ -32,11 +31,33 @@ type OrderWithUser = Order & {
   user?: { id: string; name?: string; email?: string };
 };
 
-const ORDER_STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
+const orderItemsTableCols = [
+  { field: "name", headerName: "Name" },
+  { field: "quantity", headerName: "Qty" },
+  {
+    field: "price",
+    headerName: "Price",
+    valueFormatter: (params: { value: number }) => formatCurrency(params.value),
+  },
+  {
+    headerName: "Total",
+    valueGetter: (params: { data?: { quantity?: number; price?: number } }) =>
+      formatCurrency((params.data?.quantity ?? 0) * (params.data?.price ?? 0)),
+  },
+];
+
+const ORDER_STATUS_OPTIONS: { value: OrderStatus | ""; label: string }[] = [
+  { value: "", label: "All statuses" },
   { value: "pending", label: "Pending" },
   { value: "preparing", label: "Preparing" },
   { value: "ready", label: "Ready" },
   { value: "delivered", label: "Delivered" },
+];
+
+const ORDER_TYPE_OPTIONS: { value: OrderType | ""; label: string }[] = [
+  { value: "", label: "All types" },
+  { value: "delivery", label: "Delivery" },
+  { value: "pickup", label: "Pickup" },
 ];
 
 const ActionsCell = (props: {
@@ -80,6 +101,8 @@ const OrderManagement = () => {
   } | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus>("pending");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "">("");
+  const [typeFilter, setTypeFilter] = useState<OrderType | "">("");
 
   useEffect(() => {
     let cancelled = false;
@@ -202,6 +225,12 @@ const OrderManagement = () => {
     );
   }
 
+  const filteredOrders = orders.filter((order) => {
+    const matchStatus = !statusFilter || order.status === statusFilter;
+    const matchType = !typeFilter || order.orderType === typeFilter;
+    return matchStatus && matchType;
+  });
+
   return (
     <Stack gap={5}>
       <Box>
@@ -214,7 +243,45 @@ const OrderManagement = () => {
       </Box>
       <Table
         columns={tableCols}
-        data={orders}
+        data={filteredOrders}
+        tableFilters={
+          <Stack direction="row" alignItems="center" gap={2}>
+            <FormControl size="small" sx={{ minWidth: 140 }}>
+              <InputLabel id="order-status-filter-label">Status</InputLabel>
+              <Select
+                labelId="order-status-filter-label"
+                value={statusFilter}
+                label="Status"
+                onChange={(e) =>
+                  setStatusFilter((e.target.value as OrderStatus | "") ?? "")
+                }
+              >
+                {ORDER_STATUS_OPTIONS.map((opt) => (
+                  <MenuItem key={opt.value || "all"} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 140 }}>
+              <InputLabel id="order-type-filter-label">Type</InputLabel>
+              <Select
+                labelId="order-type-filter-label"
+                value={typeFilter}
+                label="Type"
+                onChange={(e) =>
+                  setTypeFilter((e.target.value as OrderType | "") ?? "")
+                }
+              >
+                {ORDER_TYPE_OPTIONS.map((opt) => (
+                  <MenuItem key={opt.value || "all"} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+        }
         context={{
           onViewItems: handleViewItems,
           onUpdateStatus: handleOpenStatusDialog,
@@ -233,30 +300,11 @@ const OrderManagement = () => {
               No items in this order.
             </Typography>
           ) : (
-            <MuiTable size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell align="right">Qty</TableCell>
-                  <TableCell align="right">Price</TableCell>
-                  <TableCell align="right">Total</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {selectedItems.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell align="right">{item.quantity}</TableCell>
-                    <TableCell align="right">
-                      {formatCurrency(item.price)}
-                    </TableCell>
-                    <TableCell align="right">
-                      {formatCurrency(item.quantity * item.price)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </MuiTable>
+            <Table
+              columns={orderItemsTableCols}
+              data={selectedItems}
+              pagination={false}
+            />
           )}
         </DialogContent>
         <DialogActions>
