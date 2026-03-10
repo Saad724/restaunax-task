@@ -1,13 +1,13 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
-import AuthLayout from "./layout/AuthLayout";
+import AuthLayout from "./layouts/AuthLayout";
 import Login from "./screens/auth/Login";
 import Register from "./screens/auth/Register";
-import UserLayout from "./layout/UserLayout";
+import UserLayout from "./layouts/UserLayout";
 import Menu from "./screens/user/Menu/Menu";
 import Cart from "./screens/user/Cart/Cart";
-import AdminLayout from "./layout/AdminLayout";
+import AdminLayout from "./layouts/AdminLayout";
 import OrderManagement from "./screens/admin/OrderManagement/OrderManagement";
 
 const App = () => {

@@ -7,6 +7,7 @@ import {
   OrderStatus,
 } from "../../../shared/types";
 import { AuthRequest } from "../types/types";
+import { emitCreatedOrder } from "../socket/socket";
 
 const getAllOrders = async (
   req: Request,
@@ -61,6 +62,7 @@ const createOrder = async (
     }
 
     const order = await OrderService.createOrder({ ...body, userId: user?.id });
+    emitCreatedOrder(order);
     return Utils.sendResponse(true, order, 201, "Order created successfully!");
   } catch (error: unknown) {
     const message =

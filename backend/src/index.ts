@@ -5,9 +5,14 @@ import ordersRouter from "./routes/orders";
 import authRouter from "./routes/auth";
 import UserSeeder from "./seeders/user-seeder";
 import Utils from "./utils/utils";
+import http from "http";
+import { initSocket } from "./socket/socket";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+
+initSocket(server);
 
 // Middleware
 app.use(cors());
@@ -28,7 +33,7 @@ app.get("/health", (_req, res) => {
 app.use(Utils.errorHandler);
 
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
   console.log(`📋 Orders API available at http://localhost:${PORT}/api/orders`);
 });

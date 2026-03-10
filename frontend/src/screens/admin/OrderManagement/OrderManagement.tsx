@@ -25,6 +25,7 @@ import { Order } from "../../../../../shared/types";
 import { ordersApi } from "../../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../../components/Loader/Loader";
+import { getSocket } from "../../../socket/socket";
 
 /** Order with optional user (included by API) */
 type OrderWithUser = Order & {
@@ -125,6 +126,22 @@ const OrderManagement = () => {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    try {
+      const socket = getSocket();
+      const handleOrderCreated = (order: OrderWithUser) => {
+        setOrders((prev) => [order, ...prev]);
+        toast.success('New Order Recieved!')
+      };
+      socket.on("order-created", handleOrderCreated);
+      return () => {
+        socket.off("order-created", handleOrderCreated);
+      };
+    } catch {
+      return undefined;
+    }
   }, []);
 
   const handleViewItems = (rowData: { items?: OrderItem[] }) => {

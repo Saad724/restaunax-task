@@ -10,9 +10,12 @@ import {
   useTheme,
 } from "@mui/material";
 import PrimaryButton from "../components/PrimaryButton/PrimaryButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slice/AuthSlice";
 import AppCard from "../components/AppCard/AppCard";
+import { RootState } from "../store/store";
+import { useEffect, useMemo } from "react";
+import { connectSocket } from "../socket/socket";
 
 const DRAWER_WIDTH = 240;
 
@@ -20,6 +23,14 @@ const AdminLayout = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const socket = useMemo(() => connectSocket(), []);
+
+  useEffect(() => {
+    if (userInfo?.role === "admin") {
+      socket.emit("join-admin");
+    }
+  }, [userInfo]);
 
   const navItems = [{ label: "Order Managment", path: "/" }];
 

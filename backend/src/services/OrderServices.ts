@@ -45,7 +45,7 @@ const createOrder = async (data: CreateOrderRequest): Promise<Order> => {
         })),
       },
     },
-    include: { items: true },
+    include: { items: true, user: true },
   });
 
   return order as Order;
