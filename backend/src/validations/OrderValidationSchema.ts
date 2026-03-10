@@ -25,7 +25,6 @@ export const getOrderByIdParamsSchema = {
 
 export const createOrderBodySchema = {
   [Segments.BODY]: Joi.object({
-    userId: uuid.required(),
     orderType: orderType.required(),
     items: Joi.array().items(orderItemSchema).min(1).required(),
   }),

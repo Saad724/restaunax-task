@@ -1,15 +1,11 @@
 import { Order, CreateOrderRequest, OrderStatus } from "../../../shared/types";
 import { prisma } from "../lib/prisma";
 
-const VALID_STATUSES: OrderStatus[] = ["pending", "preparing", "ready", "delivered"];
+const REWARD_POINTS_PER_ORDER = 10;
 
-const getAllOrders = async (status?: string | undefined): Promise<Order[]> => {
-  const where = status && VALID_STATUSES.includes(status as OrderStatus)
-    ? { status: status as OrderStatus }
-    : undefined;
-
+const getAllOrders = async (status?: OrderStatus | undefined): Promise<Order[]> => {
   const allOrders: Order[] = await prisma.order.findMany({
-    where,
+    where: status ? { status } : {},
     include: {
       items: true,
     },
@@ -26,9 +22,13 @@ const getOrderById = async (id: string): Promise<Order | null> => {
 };
 
 const createOrder = async (data: CreateOrderRequest): Promise<Order> => {
+  if (!data?.userId) {
+    throw new Error("User not found!");
+  }
+
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
-    0
+    0,
   );
 
   const order = await prisma.order.create({
@@ -52,15 +52,30 @@ const createOrder = async (data: CreateOrderRequest): Promise<Order> => {
 
 const updateOrderStatus = async (
   id: string,
-  status: OrderStatus
+  status: OrderStatus,
 ): Promise<Order | null> => {
-  const order = await prisma.order.updateMany({
+  const orderDeliveredCheck = await prisma.order.findFirst({
+    where: { id, status: "delivered" },
+  });
+
+  if (orderDeliveredCheck) {
+    throw new Error("Order is already delivered!");
+  }
+
+  const order = await prisma.order.update({
     where: { id },
     data: { status },
   });
 
-  if (order.count === 0) {
-    return null;
+  if (status === "delivered") {
+    await prisma.user.update({
+      where: { id: order.userId },
+      data: {
+        rewardPoints: {
+          increment: REWARD_POINTS_PER_ORDER,
+        },
+      },
+    });
   }
 
   return getOrderById(id);

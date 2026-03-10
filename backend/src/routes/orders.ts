@@ -8,6 +8,7 @@ import {
   updateOrderStatusSchema,
 } from "../validations/OrderValidationSchema";
 import { authMiddleware } from "../middleware/auth-middleware";
+import { AuthRequest } from "../types/types";
 
 const router = Router();
 
@@ -45,8 +46,9 @@ router.get(
  */
 router.post(
   "/",
+  authMiddleware,
   celebrate(createOrderBodySchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { statusCode, ...rest } = await OrderController.createOrder(req, res, next);
     res.status(statusCode).json(rest);
   }
