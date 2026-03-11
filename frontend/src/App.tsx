@@ -10,10 +10,17 @@ import Cart from "./screens/user/Cart/Cart";
 import AdminLayout from "./layouts/AdminLayout";
 import OrderManagement from "./screens/admin/OrderManagement/OrderManagement";
 import Order from "./screens/user/Order/Order";
+import { useEffect } from "react";
+import { connectSocket } from "./socket/socket";
 
 const App = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const isAdmin = userInfo?.role === "admin";
+
+  useEffect(() => {
+    connectSocket();
+  }, []);
+
   return (
     <Router>
       <Routes>

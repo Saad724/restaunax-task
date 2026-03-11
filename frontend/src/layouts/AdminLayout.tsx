@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slice/AuthSlice";
 import AppCard from "../components/AppCard/AppCard";
 import { RootState } from "../store/store";
-import { useEffect, useMemo } from "react";
-import { connectSocket } from "../socket/socket";
+import { useEffect } from "react";
+import { getSocket } from "../socket/socket";
 
 const DRAWER_WIDTH = 240;
 
@@ -24,11 +24,11 @@ const AdminLayout = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const socket = useMemo(() => connectSocket(), []);
+  const socket = getSocket();
 
   useEffect(() => {
     if (userInfo?.role === "admin") {
-      socket.emit("join-admin");
+      socket?.emit("join-admin");
     }
   }, [userInfo]);
 

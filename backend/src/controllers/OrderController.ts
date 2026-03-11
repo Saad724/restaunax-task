@@ -7,7 +7,7 @@ import {
   OrderStatus,
 } from "../../../shared/types";
 import { AuthRequest } from "../types/types";
-import { emitCreatedOrder } from "../socket/socket";
+import { emitCreatedOrder, emitOrderStatusChange } from "../socket/socket";
 
 const getAllOrders = async (
   req: Request,
@@ -88,6 +88,7 @@ const updateOrderStatus = async (
     if (order === null) {
       return Utils.sendResponse(false, null, 404, "Order not found");
     }
+    emitOrderStatusChange(order)
     return Utils.sendResponse(
       true,
       order,

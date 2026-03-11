@@ -8,52 +8,64 @@ import { toast } from "react-toastify";
 import { ordersApi } from "../../../services/api";
 import { Order as OrderType, OrderItem } from "../../../../../shared/types";
 import { formatCurrency, formatDate } from "../../../utils/utils";
+import { getSocket } from "../../../socket/socket";
 
 const Order = () => {
   const { id } = useParams();
   const [order, setOrder] = useState<OrderType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const orderId = id?.trim();
+  if (!orderId) {
+    setOrder(null);
+    setErrorMessage("Missing order id.");
+    return;
+  }
+
+  const fetchOrder = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      const data = await ordersApi.getOrderById(orderId);
+
+      setOrder(data);
+    } catch (err: unknown) {
+      console.error("Failed to fetch order by id", err);
+      const message =
+        err instanceof Error ? err.message : "Failed to load order.";
+
+      setOrder(null);
+      setErrorMessage(message);
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const orderId = id?.trim();
-    if (!orderId) {
-      setOrder(null);
-      setErrorMessage("Missing order id.");
-      return;
-    }
-
-    let isCancelled = false;
-
-    const fetchOrder = async () => {
-      try {
-        setIsLoading(true);
-        setErrorMessage(null);
-
-        const data = await ordersApi.getOrderById(orderId);
-        if (isCancelled) return;
-
-        setOrder(data);
-      } catch (err: unknown) {
-        console.error("Failed to fetch order by id", err);
-        const message =
-          err instanceof Error ? err.message : "Failed to load order.";
-
-        if (isCancelled) return;
-        setOrder(null);
-        setErrorMessage(message);
-        toast.error(message);
-      } finally {
-        if (!isCancelled) setIsLoading(false);
-      }
-    };
-
     fetchOrder();
-
-    return () => {
-      isCancelled = true;
-    };
   }, [id]);
+
+  const handleStatusChange = (order: OrderType) => {
+    setOrder(order);
+  };
+
+  useEffect(() => {
+    try {
+      const socket = getSocket();
+      console.log("socket", socket);
+      if (!socket) {
+        return;
+      }
+      socket.on("order-status-change", handleStatusChange);
+      return () => {
+        socket.off("order-status-change", handleStatusChange);
+      };
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }, []);
 
   const itemsTableCols = useMemo(
     () => [

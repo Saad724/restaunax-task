@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { Order } from "../../../shared/types";
 
 let io: Server;
 
@@ -28,8 +29,14 @@ export const initSocket = (server: any) => {
   return io;
 };
 
-export const emitCreatedOrder = (order: unknown) => {
+export const emitCreatedOrder = (order: Order) => {
   if (!io) return;
-  console.log("Order created, emitting order-created:", order);
+  console.log("Order created, emitting order-created:");
   io.emit("order-created", order);
+};
+
+export const emitOrderStatusChange = (order: Order) => {
+  if (!io) return;
+  console.log("Order status updated, emitting order-status-change:");
+  io.emit("order-status-change", order);
 };

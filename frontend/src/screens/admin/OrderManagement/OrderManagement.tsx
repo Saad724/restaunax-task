@@ -121,16 +121,20 @@ const OrderManagement = () => {
     fetchOrders();
   }, []);
 
+  const handleOrderCreated = (order: OrderWithUser) => {
+    setOrders((prev) => [order, ...prev]);
+    toast.success("New Order Recieved!");
+  };
+
   useEffect(() => {
     try {
       const socket = getSocket();
-      const handleOrderCreated = (order: OrderWithUser) => {
-        setOrders((prev) => [order, ...prev]);
-        toast.success("New Order Recieved!");
-      };
-      socket.on("order-created", handleOrderCreated);
+      if (!socket) {
+        return;
+      }
+      socket?.on("order-created", handleOrderCreated);
       return () => {
-        socket.off("order-created", handleOrderCreated);
+        socket?.off("order-created", handleOrderCreated);
       };
     } catch {
       return undefined;
