@@ -57,6 +57,7 @@ enum OrderStatus {
   preparing
   ready
   delivered
+  cancelled
 }
 
 model OrderItem {

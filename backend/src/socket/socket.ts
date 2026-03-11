@@ -3,6 +3,8 @@ import { Order } from "../../../shared/types";
 
 let io: Server;
 
+const admins = new Set<string>();
+
 export const initSocket = (server: any) => {
   io = new Server(server, {
     cors: {
@@ -12,8 +14,6 @@ export const initSocket = (server: any) => {
 
   io.on("connection", (socket) => {
     console.log("Client connected:", socket.id);
-
-    const admins = new Set<string>();
 
     socket.on("join-admin", () => {
       admins.add(socket.id);
@@ -29,6 +29,10 @@ export const initSocket = (server: any) => {
       if (!orderId) return;
       socket.join(`order-${orderId}`);
       console.log(`New order created order-${orderId}`);
+    });
+
+    socket.on("order-cancelled", (order: Order) => {
+      io.emit("order-cancelled", order);
     });
   });
 

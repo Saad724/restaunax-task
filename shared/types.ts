@@ -1,6 +1,6 @@
 // Shared TypeScript types for Restaunax Order Management
 
-export type OrderStatus = "pending" | "preparing" | "ready" | "delivered";
+export type OrderStatus = "pending" | "preparing" | "ready" | "delivered" | "cancelled";
 export type OrderType = "delivery" | "pickup";
 
 export interface User {

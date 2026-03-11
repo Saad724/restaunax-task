@@ -3,18 +3,24 @@ import { prisma } from "../lib/prisma";
 
 const REWARD_POINTS_PER_ORDER = 10;
 
-const getAllOrders = async (status?: OrderStatus | undefined): Promise<Order[]> => {
+const getAllOrders = async (
+  status?: OrderStatus | undefined,
+): Promise<Order[]> => {
   const allOrders: Order[] = await prisma.order.findMany({
     where: status ? { status } : {},
+    orderBy: { createdAt: "desc" },
     include: {
       items: true,
-      user: true
+      user: true,
     },
   });
   return allOrders;
 };
 
-const getOrderById = async (id: string, userId: string): Promise<Order | null> => {
+const getOrderById = async (
+  id: string,
+  userId: string,
+): Promise<Order | null> => {
   const order = await prisma.order.findUnique({
     where: { id, userId },
     include: { items: true, user: true },

@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { Segments } from "celebrate";
 
-const orderStatus = Joi.string().valid("pending", "preparing", "ready", "delivered");
+const orderStatus = Joi.string().valid("pending", "preparing", "ready", "delivered", "cancelled");
 const orderType = Joi.string().valid("delivery", "pickup");
 const uuid = Joi.string().uuid({ version: "uuidv4" });
 

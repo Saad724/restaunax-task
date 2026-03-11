@@ -9,12 +9,15 @@ import { ordersApi } from "../../../services/api";
 import { Order as OrderType, OrderItem } from "../../../../../shared/types";
 import { formatCurrency, formatDate } from "../../../utils/utils";
 import { getSocket } from "../../../socket/socket";
+import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 
 const Order = () => {
   const { id } = useParams();
   const [order, setOrder] = useState<OrderType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [cancelLoader, setCancelLoader] = useState(false);
+
   const orderId = id?.trim();
   if (!orderId) {
     setOrder(null);
@@ -66,6 +69,33 @@ const Order = () => {
       throw new Error(error);
     }
   }, []);
+
+  const cancelOrder = async () => {
+    try {
+      const socket = getSocket();
+      setCancelLoader(true)
+      if (!order) {
+        return;
+      }
+      const updatedOrder = await ordersApi.updateOrderStatus(order?.id, "cancelled");
+      setOrder((prev) => {
+        if (!prev) return prev;
+
+        return {
+          ...prev,
+          status: "cancelled",
+        };
+      });
+      if(socket){
+        socket.emit("order-cancelled", updatedOrder)
+      }
+      toast.success("Order Cancelled Successfully!");
+    } catch (error: any) {
+      throw new Error(error);
+    } finally {
+      setCancelLoader(false)
+    }
+  };
 
   const itemsTableCols = useMemo(
     () => [
@@ -195,6 +225,11 @@ const Order = () => {
             />
           </Box>
         </Stack>
+        {order?.status === "pending" && (
+          <Stack alignItems={"flex-end"} sx={{ marginBlock: "20px" }}>
+            <PrimaryButton smallBtn onClick={cancelOrder} disabled={cancelLoader}>{cancelLoader ? <Loader /> : "Cancel Order"}</PrimaryButton>
+          </Stack>
+        )}
       </AppCard>
     </Stack>
   );

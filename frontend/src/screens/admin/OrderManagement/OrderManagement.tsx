@@ -53,6 +53,7 @@ const ORDER_STATUS_OPTIONS: { value: OrderStatus | ""; label: string }[] = [
   { value: "preparing", label: "Preparing" },
   { value: "ready", label: "Ready" },
   { value: "delivered", label: "Delivered" },
+  { value: "cancelled", label: "Cancelled" },
 ];
 
 const ORDER_TYPE_OPTIONS: { value: OrderType | ""; label: string }[] = [
@@ -79,13 +80,15 @@ const ActionsCell = (props: {
       >
         <VisibilityIcon fontSize="small" />
       </IconButton>
-      <IconButton
-        size="small"
-        onClick={() => onUpdateStatus?.(rowData)}
-        aria-label="Update order status"
-      >
-        <EditIcon fontSize="small" />
-      </IconButton>
+      {rowData?.status !== "cancelled" && (
+        <IconButton
+          size="small"
+          onClick={() => onUpdateStatus?.(rowData)}
+          aria-label="Update order status"
+        >
+          <EditIcon fontSize="small" />
+        </IconButton>
+      )}
     </Stack>
   );
 };
@@ -126,6 +129,11 @@ const OrderManagement = () => {
     toast.success("New Order Recieved!");
   };
 
+  const handleCancelledOrder = (order: OrderWithUser) => {
+    setOrders((prev) => [order, ...prev]);
+    toast.error(`${order?.user?.name} Canclled Order!`);
+  };
+
   useEffect(() => {
     try {
       const socket = getSocket();
@@ -133,8 +141,10 @@ const OrderManagement = () => {
         return;
       }
       socket?.on("order-created", handleOrderCreated);
+      socket?.on("order-cancelled", handleCancelledOrder);
       return () => {
         socket?.off("order-created", handleOrderCreated);
+        socket?.off("order-cancelled", handleCancelledOrder);
       };
     } catch {
       return undefined;
