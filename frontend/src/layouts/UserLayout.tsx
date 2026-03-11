@@ -21,7 +21,7 @@ const UserLayout = () => {
           padding: "20px",
         }}
       >
-        All rights reserved
+        © All rights reserved
       </Box>
     </Stack>
   );

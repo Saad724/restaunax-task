@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, Badge } from "@mui/material";
+import { Box, Stack, Typography, IconButton, Badge, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,9 +53,6 @@ const MenuCard = ({ item }: MenuCardProps) => {
   return (
     <AppCard
       sx={{
-        flex: 1,
-        minWidth: 300,
-        maxWidth: 320,
         overflow: "hidden",
         transition: "transform 160ms ease, box-shadow 160ms ease",
         "&:hover": {
@@ -192,61 +189,73 @@ const Menu = () => {
     fetchMenu();
   }, []);
 
-  if (isFetching) {
-    return (
-      <AppCard>
-        <Stack justifyContent={"center"} alignItems={"center"}>
-          <Loader />
-        </Stack>
-      </AppCard>
-    );
-  }
-
   return (
     <Stack>
-      <Stack
-        direction={"row"}
-        alignItems={"center"}
-        justifyContent={"space-between"}
-      >
-        <Box>
-          <Typography variant="h5" component="h1">
-            Order
-          </Typography>
-          <Typography color={"text.disabled"} variant="subtitle2">
-            Order your favorite food now
-          </Typography>
-        </Box>
-        <IconButton
-          size="small"
-          onClick={() => navigate("/cart")}
-          aria-label="View cart items"
-          color="primary"
-          sx={{ position: "primary" }}
+      <AppCard>
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
         >
-          <Badge
-            badgeContent={items?.length}
-            color="primary"
-            overlap="circular"
-            sx={{ position: "absolute", top: -5, right: 0 }}
-          />
-          <FontAwesomeIcon icon={faCartFlatbed} />
-        </IconButton>
-      </Stack>
-      <Stack
-        direction={"row"}
-        gap={2}
-        sx={{ marginBlock: "20px" }}
-        flexWrap="wrap"
-      >
-        {!!menuItems?.length ? (
-          menuItems?.map((item: MenuItem) => (
-            <MenuCard key={item?.id as string} item={item} />
-          ))
-        ) : (
-          <Typography>No menu found!</Typography>
-        )}
-      </Stack>
+          <Box>
+            <Typography variant="h5" component="h1">
+              Order
+            </Typography>
+            <Typography color={"text.disabled"} variant="subtitle2">
+              Order your favorite food now
+            </Typography>
+          </Box>
+          <Stack direction={"row"} alignItems={"center"} gap={2}>
+            <IconButton
+              size="small"
+              onClick={() => navigate("/cart")}
+              aria-label="View cart items"
+              color="primary"
+              sx={{ position: "primary" }}
+            >
+              <Badge
+                badgeContent={items?.length}
+                color="secondary"
+                overlap="circular"
+                sx={{ position: "absolute", top: -5, right: 0 }}
+              />
+              <FontAwesomeIcon icon={faCartFlatbed} />
+            </IconButton>
+            <PrimaryButton smallBtn onClick={() => navigate("/my-orders")}>
+              My Orders
+            </PrimaryButton>
+          </Stack>
+        </Stack>
+      </AppCard>
+      {isFetching ? (
+        <AppCard sx={{ marginBlock: '20px'}}>
+          <Stack justifyContent={"center"} alignItems={"center"}>
+            <Loader />
+          </Stack>
+        </AppCard>
+      ) : (
+        <Grid
+          gap={2}
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+            },
+            marginBlock: "20px",
+          }}
+          flexWrap="wrap"
+        >
+          {!!menuItems?.length ? (
+            menuItems?.map((item: MenuItem) => (
+              <MenuCard key={item?.id as string} item={item} />
+            ))
+          ) : (
+            <Typography>No menu found!</Typography>
+          )}
+        </Grid>
+      )}
     </Stack>
   );
 };

@@ -42,7 +42,7 @@ const getOrderById = async (
       throw new Error("User not found!");
     }
 
-    const order = await OrderService.getOrderById(id, user?.id);
+    const order = await OrderService.getOrderById(id, user);
     if (order === null) {
       return Utils.sendResponse(false, null, 404, "Order not found");
     }

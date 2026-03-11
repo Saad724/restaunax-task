@@ -2,6 +2,7 @@
 
 export type OrderStatus = "pending" | "preparing" | "ready" | "delivered" | "cancelled";
 export type OrderType = "delivery" | "pickup";
+export type UserRole = "admin" | "user";
 
 export interface User {
   id: string;
@@ -9,7 +10,7 @@ export interface User {
   email: string;
   phone: string;
   rewardPoints: number;
-  role: string;
+  role: UserRole;
   createdAt: Date;
 }
 

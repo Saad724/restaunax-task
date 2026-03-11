@@ -125,6 +125,21 @@ export const adminApi = {
   },
 };
 
+export const userApi = {
+  async getOrders(): Promise<Order[]> {
+    const response = (await axiosWrapper(
+      "get",
+      `${API_BASE_URL}/user/orders`,
+    )) as ApiResponse<Order[]>;
+
+    if (!response.success || !Array.isArray(response.data)) {
+      throw new Error(response.message || "Failed to fetch user orders");
+    }
+
+    return response.data;
+  },
+};
+
 export interface LoginResponse {
   user: {
     id: string;

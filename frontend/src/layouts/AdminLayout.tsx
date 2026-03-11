@@ -12,7 +12,6 @@ import {
 import PrimaryButton from "../components/PrimaryButton/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slice/AuthSlice";
-import AppCard from "../components/AppCard/AppCard";
 import { RootState } from "../store/store";
 import { useEffect } from "react";
 import { getSocket } from "../socket/socket";
@@ -32,7 +31,10 @@ const AdminLayout = () => {
     }
   }, [userInfo]);
 
-  const navItems = [{ label: "Dashboard", path: "/" }, { label: "Order Managment", path: "/order-management" }];
+  const navItems = [
+    { label: "Dashboard", path: "/" },
+    { label: "Order Managment", path: "/order-management" },
+  ];
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -89,12 +91,11 @@ const AdminLayout = () => {
         <Box
           component="main"
           sx={{
-            maxWidth: "2560px",
+            maxWidth: "1920px",
+            overflowX: "hidden",
           }}
         >
-          <AppCard>
-            <Outlet />
-          </AppCard>
+          <Outlet />
         </Box>
       </Box>
     </Box>

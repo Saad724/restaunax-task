@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Box, Chip, Stack, Typography } from "@mui/material";
 import AppCard from "../../../components/AppCard/AppCard";
 import Loader from "../../../components/Loader/Loader";
@@ -17,6 +17,7 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [cancelLoader, setCancelLoader] = useState(false);
+  const navigate = useNavigate()
 
   const orderId = id?.trim();
   if (!orderId) {
@@ -73,11 +74,14 @@ const Order = () => {
   const cancelOrder = async () => {
     try {
       const socket = getSocket();
-      setCancelLoader(true)
+      setCancelLoader(true);
       if (!order) {
         return;
       }
-      const updatedOrder = await ordersApi.updateOrderStatus(order?.id, "cancelled");
+      const updatedOrder = await ordersApi.updateOrderStatus(
+        order?.id,
+        "cancelled",
+      );
       setOrder((prev) => {
         if (!prev) return prev;
 
@@ -86,14 +90,14 @@ const Order = () => {
           status: "cancelled",
         };
       });
-      if(socket){
-        socket.emit("order-cancelled", updatedOrder)
+      if (socket) {
+        socket.emit("order-cancelled", updatedOrder);
       }
       toast.success("Order Cancelled Successfully!");
     } catch (error: any) {
       throw new Error(error);
     } finally {
-      setCancelLoader(false)
+      setCancelLoader(false);
     }
   };
 
@@ -162,35 +166,37 @@ const Order = () => {
   return (
     <Stack gap={3}>
       <Typography
-        component={Link}
-        to="/"
+        onClick={() => navigate(-1)}
         sx={{
           color: "primary.main",
           textDecoration: "none",
           width: "fit-content",
+          cursor: 'pointer'
         }}
       >
-        Back to menu
+        Go Back
       </Typography>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        justifyContent="space-between"
-        alignItems={{ xs: "flex-start", sm: "center" }}
-        gap={1}
-      >
-        <Box>
-          <Typography variant="h5" component="h1">
-            Order details
-          </Typography>
-          <Typography color="text.disabled" variant="subtitle2">
-            Order ID: {order.id}
-          </Typography>
-        </Box>
-        <Stack direction="row" gap={1} alignItems="center">
-          <Chip label={`Status: ${order.status}`} variant="outlined" />
-          <Chip label={`Type: ${order.orderType}`} variant="outlined" />
+      <AppCard>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          gap={1}
+        >
+          <Box>
+            <Typography variant="h5" component="h1">
+              Order details
+            </Typography>
+            <Typography color="text.disabled" variant="subtitle2">
+              Order ID: {order.id}
+            </Typography>
+          </Box>
+          <Stack direction="row" gap={1} alignItems="center">
+            <Chip label={`Status: ${order.status}`} variant="outlined" />
+            <Chip label={`Type: ${order.orderType}`} variant="outlined" />
+          </Stack>
         </Stack>
-      </Stack>
+      </AppCard>
 
       <AppCard>
         <Stack gap={2}>
@@ -227,7 +233,13 @@ const Order = () => {
         </Stack>
         {order?.status === "pending" && (
           <Stack alignItems={"flex-end"} sx={{ marginBlock: "20px" }}>
-            <PrimaryButton smallBtn onClick={cancelOrder} disabled={cancelLoader}>{cancelLoader ? <Loader /> : "Cancel Order"}</PrimaryButton>
+            <PrimaryButton
+              smallBtn
+              onClick={cancelOrder}
+              disabled={cancelLoader}
+            >
+              {cancelLoader ? <Loader /> : "Cancel Order"}
+            </PrimaryButton>
           </Stack>
         )}
       </AppCard>

@@ -1,4 +1,9 @@
-import { Order, CreateOrderRequest, OrderStatus } from "../../../shared/types";
+import {
+  Order,
+  CreateOrderRequest,
+  OrderStatus,
+  User,
+} from "../../../shared/types";
 import { prisma } from "../lib/prisma";
 
 const REWARD_POINTS_PER_ORDER = 10;
@@ -17,12 +22,10 @@ const getAllOrders = async (
   return allOrders;
 };
 
-const getOrderById = async (
-  id: string,
-  userId: string,
-): Promise<Order | null> => {
+const getOrderById = async (id: string, user: User): Promise<Order | null> => {
+  const whereQuery = user?.role === "user" ? { id, userId: user?.id } : { id };
   const order = await prisma.order.findUnique({
-    where: { id, userId },
+    where: whereQuery,
     include: { items: true, user: true },
   });
   return order as Order | null;
@@ -72,6 +75,7 @@ const updateOrderStatus = async (
   const order = await prisma.order.update({
     where: { id },
     data: { status },
+    include: { user: true }
   });
 
   if (status === "delivered") {
@@ -85,7 +89,7 @@ const updateOrderStatus = async (
     });
   }
 
-  return getOrderById(id, order.userId);
+  return getOrderById(id, order.user);
 };
 
 const OrderService = {

@@ -8,7 +8,7 @@ const AuthLayout = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
 
   if (userInfo) {
-    return <Navigate to="/menu" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return (

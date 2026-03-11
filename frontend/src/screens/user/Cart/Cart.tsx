@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Box, Stack, Typography, IconButton } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -86,7 +86,10 @@ const Cart = () => {
     }
     try {
       setIsOrdering(true);
-      const order = await ordersApi.createOrder("delivery", cartItems as OrderItem[]);
+      const order = await ordersApi.createOrder(
+        "delivery",
+        cartItems as OrderItem[],
+      );
       dispatch(clearCart());
       toast.success("Order created successfully!");
       socket?.emit("new-order", order?.id);
@@ -118,12 +121,25 @@ const Cart = () => {
 
   return (
     <Stack gap={3}>
-      <Typography variant="h5" component="h1">
-        Cart
+      <Typography
+        component={Link}
+        to="/"
+        sx={{
+          color: "primary.main",
+          textDecoration: "none",
+          width: "fit-content",
+        }}
+      >
+        Back to menu
       </Typography>
-      <Typography color="text.disabled" variant="subtitle2">
-        Review your items and proceed to order
-      </Typography>
+      <AppCard>
+        <Typography variant="h5" component="h1">
+          Cart
+        </Typography>
+        <Typography color="text.disabled" variant="subtitle2">
+          Review your items and proceed to order
+        </Typography>
+      </AppCard>
       <AppCard sx={{ overflow: "hidden" }}>
         <Table
           columns={cartTableCols}

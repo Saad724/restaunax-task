@@ -5,6 +5,7 @@ import ordersRouter from "./routes/orders";
 import authRouter from "./routes/auth";
 import menuRouter from "./routes/menu";
 import adminRouter from "./routes/admin";
+import userRouter from "./routes/user";
 import UserSeeder from "./seeders/user-seeder";
 import Utils from "./utils/utils";
 import http from "http";
@@ -29,6 +30,7 @@ app.use("/api/orders", ordersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/menu", menuRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/user", userRouter);
 
 // Health check endpoint
 app.get("/health", (_req, res) => {

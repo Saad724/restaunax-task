@@ -26,26 +26,13 @@ import { ordersApi } from "../../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../../components/Loader/Loader";
 import { getSocket } from "../../../socket/socket";
+import { useNavigate } from "react-router-dom";
+import AppCard from "../../../components/AppCard/AppCard";
 
 /** Order with optional user (included by API) */
 type OrderWithUser = Order & {
   user?: { id: string; name?: string; email?: string };
 };
-
-const orderItemsTableCols = [
-  { field: "name", headerName: "Name" },
-  { field: "quantity", headerName: "Qty" },
-  {
-    field: "price",
-    headerName: "Price",
-    valueFormatter: (params: { value: number }) => formatCurrency(params.value),
-  },
-  {
-    headerName: "Total",
-    valueGetter: (params: { data?: { quantity?: number; price?: number } }) =>
-      formatCurrency((params.data?.quantity ?? 0) * (params.data?.price ?? 0)),
-  },
-];
 
 const ORDER_STATUS_OPTIONS: { value: OrderStatus | ""; label: string }[] = [
   { value: "", label: "All statuses" },
@@ -96,8 +83,6 @@ const ActionsCell = (props: {
 const OrderManagement = () => {
   const [orders, setOrders] = useState<OrderWithUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<{
     id: string;
@@ -107,6 +92,7 @@ const OrderManagement = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "">("");
   const [typeFilter, setTypeFilter] = useState<OrderType | "">("");
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     try {
@@ -151,13 +137,8 @@ const OrderManagement = () => {
     }
   }, []);
 
-  const handleViewItems = (rowData: { items?: OrderItem[] }) => {
-    setSelectedItems(rowData.items ?? []);
-    setDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleViewItems = (rowData: Order) => {
+    navigate(`/order/${rowData?.id}`);
   };
 
   const handleOpenStatusDialog = (rowData: {
@@ -226,8 +207,14 @@ const OrderManagement = () => {
     },
   ];
 
-  if (loading) {
-    return (
+  const filteredOrders = orders.filter((order) => {
+    const matchStatus = !statusFilter || order.status === statusFilter;
+    const matchType = !typeFilter || order.orderType === typeFilter;
+    return matchStatus && matchType;
+  });
+
+  return (
+    <AppCard>
       <Stack gap={5}>
         <Box>
           <Typography variant="h5" component="h1">
@@ -237,140 +224,104 @@ const OrderManagement = () => {
             Dashboard to easily manage all the orders
           </Typography>
         </Box>
-        <Stack
-          direction={"row"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          sx={{ py: 4 }}
-        >
-          Fetching Records <Loader />
-        </Stack>
-      </Stack>
-    );
-  }
-
-  const filteredOrders = orders.filter((order) => {
-    const matchStatus = !statusFilter || order.status === statusFilter;
-    const matchType = !typeFilter || order.orderType === typeFilter;
-    return matchStatus && matchType;
-  });
-
-  return (
-    <Stack gap={5}>
-      <Box>
-        <Typography variant="h5" component="h1">
-          Order Management
-        </Typography>
-        <Typography color={"text.disabled"} variant="subtitle2">
-          Dashboard to easily manage all the orders
-        </Typography>
-      </Box>
-      <Table
-        columns={tableCols}
-        data={filteredOrders}
-        tableFilters={
-          <Stack direction="row" alignItems="center" gap={2}>
-            <FormControl size="small" sx={{ minWidth: 140 }}>
-              <InputLabel id="order-status-filter-label">Status</InputLabel>
-              <Select
-                labelId="order-status-filter-label"
-                value={statusFilter}
-                label="Status"
-                onChange={(e) =>
-                  setStatusFilter((e.target.value as OrderStatus | "") ?? "")
-                }
-              >
-                {ORDER_STATUS_OPTIONS.map((opt) => (
-                  <MenuItem key={opt.value || "all"} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 140 }}>
-              <InputLabel id="order-type-filter-label">Type</InputLabel>
-              <Select
-                labelId="order-type-filter-label"
-                value={typeFilter}
-                label="Type"
-                onChange={(e) =>
-                  setTypeFilter((e.target.value as OrderType | "") ?? "")
-                }
-              >
-                {ORDER_TYPE_OPTIONS.map((opt) => (
-                  <MenuItem key={opt.value || "all"} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        }
-        context={{
-          onViewItems: handleViewItems,
-          onUpdateStatus: handleOpenStatusDialog,
-        }}
-      />
-      <Dialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Order items</DialogTitle>
-        <DialogContent>
-          {selectedItems.length === 0 ? (
-            <Typography color="text.secondary">
-              No items in this order.
-            </Typography>
-          ) : (
-            <Table
-              columns={orderItemsTableCols}
-              data={selectedItems}
-              pagination={false}
-            />
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={statusDialogOpen}
-        onClose={handleCloseStatusDialog}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>Update order status</DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 1 }}>
-            <Input
-              name="status"
-              type="text"
-              label="Status"
-              select
-              options={ORDER_STATUS_OPTIONS}
-              value={selectedStatus}
-              onChange={(e: { target: { value: unknown } }) =>
-                setSelectedStatus((e.target.value as OrderStatus) ?? "pending")
-              }
-              fullWidth
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseStatusDialog}>Cancel</Button>
-          <PrimaryButton
-            onClick={handleUpdateStatus}
-            disabled={isUpdating}
-            smallBtn
+        {loading ? (
+          <Stack
+            direction={"row"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            sx={{ py: 4 }}
           >
-            {isUpdating ? "Updating..." : "Update"}
-          </PrimaryButton>
-        </DialogActions>
-      </Dialog>
-    </Stack>
+            Fetching Records <Loader />
+          </Stack>
+        ) : (
+          <Table
+            columns={tableCols}
+            data={filteredOrders}
+            tableFilters={
+              <Stack direction="row" alignItems="center" gap={2}>
+                <FormControl size="small" sx={{ minWidth: 140 }}>
+                  <InputLabel id="order-status-filter-label">Status</InputLabel>
+                  <Select
+                    labelId="order-status-filter-label"
+                    value={statusFilter}
+                    label="Status"
+                    onChange={(e) =>
+                      setStatusFilter(
+                        (e.target.value as OrderStatus | "") ?? "",
+                      )
+                    }
+                  >
+                    {ORDER_STATUS_OPTIONS.map((opt) => (
+                      <MenuItem key={opt.value || "all"} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl size="small" sx={{ minWidth: 140 }}>
+                  <InputLabel id="order-type-filter-label">Type</InputLabel>
+                  <Select
+                    labelId="order-type-filter-label"
+                    value={typeFilter}
+                    label="Type"
+                    onChange={(e) =>
+                      setTypeFilter((e.target.value as OrderType | "") ?? "")
+                    }
+                  >
+                    {ORDER_TYPE_OPTIONS.map((opt) => (
+                      <MenuItem key={opt.value || "all"} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
+            }
+            context={{
+              onViewItems: handleViewItems,
+              onUpdateStatus: handleOpenStatusDialog,
+            }}
+          />
+        )}
+
+        <Dialog
+          open={statusDialogOpen}
+          onClose={handleCloseStatusDialog}
+          maxWidth="xs"
+          fullWidth
+        >
+          <DialogTitle>Quick update order status</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 1 }}>
+              <Input
+                name="status"
+                type="text"
+                label="Status"
+                select
+                options={ORDER_STATUS_OPTIONS}
+                value={selectedStatus}
+                onChange={(e: { target: { value: unknown } }) =>
+                  setSelectedStatus(
+                    (e.target.value as OrderStatus) ?? "pending",
+                  )
+                }
+                fullWidth
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseStatusDialog}>Cancel</Button>
+            <PrimaryButton
+              onClick={handleUpdateStatus}
+              disabled={isUpdating}
+              smallBtn
+            >
+              {isUpdating ? "Updating..." : "Update"}
+            </PrimaryButton>
+          </DialogActions>
+        </Dialog>
+      </Stack>
+    </AppCard>
   );
 };
 

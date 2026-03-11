@@ -8,6 +8,7 @@ import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { authApi } from "../../services/api";
 import { login } from "../../store/slice/AuthSlice";
 import AppCard from "../../components/AppCard/AppCard";
+import Loader from "../../components/Loader/Loader";
 
 const registerSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -141,7 +142,7 @@ const Register = () => {
                   disabled={formik.isSubmitting}
                   sx={{ marginBlock: "20px", width: "100%" }}
                 >
-                  {formik.isSubmitting ? "Creating account..." : "Register"}
+                  {formik.isSubmitting ? <Loader /> : "Register"}
                 </PrimaryButton>
                 <Typography variant="body2" align="center">
                   Already have an account?{" "}

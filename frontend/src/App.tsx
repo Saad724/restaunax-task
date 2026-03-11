@@ -13,6 +13,7 @@ import Order from "./screens/user/Order/Order";
 import { useEffect } from "react";
 import { connectSocket } from "./socket/socket";
 import Dashboard from "./screens/admin/Dashboard/Dashboard";
+import MyOrders from "./screens/user/MyOrders/MyOrders";
 
 const App = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Menu />} />
             <Route path="cart" element={<Cart />} />
+            <Route path="my-orders" element={<MyOrders />} />
             <Route path="order/:id" element={<Order />} />
           </Route>
         )}
@@ -47,6 +49,7 @@ const App = () => {
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="order-management" element={<OrderManagement />} />
+            <Route path="order/:id" element={<Order />} />
           </Route>
         )}
         <Route path="*" element={<>Route Not Found</>} />

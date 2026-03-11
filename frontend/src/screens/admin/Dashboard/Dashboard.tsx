@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import AppCard from "../../../components/AppCard/AppCard";
 import Loader from "../../../components/Loader/Loader";
 import { adminApi, AdminDashboardStats } from "../../../services/api";
@@ -53,13 +53,13 @@ type PieChartCardProps = {
 const PieChartCard = ({ title, labels, values }: PieChartCardProps) => {
   const data = useMemo(() => {
     const colors = [
-      "#2563eb",
-      "#16a34a",
-      "#f59e0b",
-      "#ef4444",
-      "#8b5cf6",
-      "#06b6d4",
-      "#64748b",
+      "#4e79a7",
+      "#59a14f",
+      "#f28e2b",
+      "#e15759",
+      "#b07aa1",
+      "#76b7b2",
+      "#9c9c9c",
     ];
 
     return {
@@ -119,6 +119,7 @@ type BarChartCardProps = {
 };
 
 const BarChartCard = ({ title, labels, values }: BarChartCardProps) => {
+  const theme = useTheme();
   const data = useMemo(() => {
     return {
       labels,
@@ -126,7 +127,7 @@ const BarChartCard = ({ title, labels, values }: BarChartCardProps) => {
         {
           label: "Orders per day",
           data: values.map((v) => Number(v ?? 0)),
-          backgroundColor: "rgba(37, 99, 235, 0.85)",
+          backgroundColor: theme.palette.primary.main,
           borderRadius: 8,
           maxBarThickness: 28,
         },
@@ -182,29 +183,23 @@ const Dashboard = () => {
   const [stats, setStats] = useState<AdminDashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchDashboard = async () => {
+    try {
+      setIsLoading(true);
+      const data = await adminApi.getDashboard();
+      setStats(data);
+    } catch (error: unknown) {
+      console.error("Failed to fetch dashboard", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to fetch dashboard";
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let isCancelled = false;
-
-    const fetchDashboard = async () => {
-      try {
-        setIsLoading(true);
-        const data = await adminApi.getDashboard();
-        if (!isCancelled) setStats(data);
-      } catch (error: unknown) {
-        console.error("Failed to fetch dashboard", error);
-        const message =
-          error instanceof Error ? error.message : "Failed to fetch dashboard";
-        toast.error(message);
-      } finally {
-        if (!isCancelled) setIsLoading(false);
-      }
-    };
-
     fetchDashboard();
-
-    return () => {
-      isCancelled = true;
-    };
   }, []);
 
   const countStats = stats?.countStats;
@@ -218,51 +213,52 @@ const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <Stack justifyContent="center" alignItems="center" sx={{ py: 6 }}>
-        <Stack direction={"row"} alignItems={"center"} gap={1}>
-          <Typography>Fetching Stats</Typography>
-          <Loader />
+      <AppCard>
+        <Stack justifyContent="center" alignItems="center" sx={{ py: 6 }}>
+          <Stack direction={"row"} alignItems={"center"} gap={1}>
+            <Typography>Fetching Stats</Typography>
+            <Loader />
+          </Stack>
         </Stack>
-      </Stack>
+      </AppCard>
     );
   }
 
   return (
-    <Stack gap={3}>
-      <Box>
-        <Typography variant="h5" component="h1">
-          Dashboard
-        </Typography>
-        <Typography color="text.disabled" variant="subtitle2">
-          Overview of platform activity
-        </Typography>
-      </Box>
+    <AppCard>
+      <Stack gap={3}>
+        <Box>
+          <Typography variant="h5" component="h1">
+            Dashboard
+          </Typography>
+          <Typography color="text.disabled" variant="subtitle2">
+            Overview of platform activity
+          </Typography>
+        </Box>
 
-      <Stack direction={{ xs: "column", md: "row" }} gap={2}>
-        <StatCard label="Users" value={countStats?.users ?? 0} />
-        <StatCard label="Orders" value={countStats?.orders ?? 0} />
-        <StatCard label="Menu items" value={countStats?.menu ?? 0} />
+        <Stack direction={{ xs: "column", md: "row" }} gap={2}>
+          <StatCard label="Users" value={countStats?.users ?? 0} />
+          <StatCard label="Orders" value={countStats?.orders ?? 0} />
+          <StatCard label="Menu items" value={countStats?.menu ?? 0} />
+        </Stack>
+        <Stack
+          direction={{ xs: "column", lg: "row" }}
+          gap={2}
+          alignItems="stretch"
+        >
+          <PieChartCard
+            title="Orders by status"
+            labels={pieLabels}
+            values={pieValues}
+          />
+          <BarChartCard
+            title="Orders per day"
+            labels={barLabels}
+            values={barValues}
+          />
+        </Stack>
       </Stack>
-
-      <Divider />
-
-      <Stack
-        direction={{ xs: "column", lg: "row" }}
-        gap={2}
-        alignItems="stretch"
-      >
-        <PieChartCard
-          title="Orders by status"
-          labels={pieLabels}
-          values={pieValues}
-        />
-        <BarChartCard
-          title="Orders per day"
-          labels={barLabels}
-          values={barValues}
-        />
-      </Stack>
-    </Stack>
+    </AppCard>
   );
 };
 
