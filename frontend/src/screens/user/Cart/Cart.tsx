@@ -15,6 +15,7 @@ import { OrderItem } from "../../../../../shared/types";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartFlatbed } from "@fortawesome/free-solid-svg-icons";
+import { getSocket } from "../../../socket/socket";
 
 const RemoveCartItemButton = (props: {
   data?: { id?: string };
@@ -40,6 +41,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const [isOrdering, setIsOrdering] = useState(false);
+  const socket = getSocket();
 
   const handleRemoveFromCart = (id: string) => {
     dispatch(removeFromCart(id));
@@ -87,6 +89,7 @@ const Cart = () => {
       const order = await ordersApi.createOrder("delivery", cartItems as OrderItem[]);
       dispatch(clearCart());
       toast.success("Order created successfully!");
+      socket?.emit("new-order", order?.id);
       navigate(`/order/${order?.id}`);
     } catch (error: unknown) {
       toast.error(error instanceof Error ? error.message : "Order failed");
