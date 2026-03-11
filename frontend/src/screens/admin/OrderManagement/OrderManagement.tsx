@@ -20,7 +20,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import Table from "../../../components/Table/Table";
 import Input from "../../../components/Input/Input";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
-import { formatCurrency, formatDate, truncateString } from "../../../utils/utils";
+import {
+  formatCurrency,
+  formatDate,
+  truncateString,
+} from "../../../utils/utils";
 import { OrderItem, OrderStatus, OrderType } from "../../../../../shared/types";
 import { Order } from "../../../../../shared/types";
 import { ordersApi } from "../../../services/api";
@@ -218,7 +222,17 @@ const OrderManagement = () => {
   };
 
   const tableCols = [
-    { field: "user.name", headerName: "Customer", cellRenderer: ({ data }: {data: Order}) => <Typography variant="caption">{truncateString(data?.user?.name)}</Typography>, flex: 0, width: 280 },
+    {
+      field: "user.name",
+      headerName: "Customer",
+      cellRenderer: ({ data }: { data: Order }) => (
+        <Typography variant="caption">
+          {truncateString(data?.user?.name)}
+        </Typography>
+      ),
+      flex: 0,
+      width: 280,
+    },
     { field: "orderType", headerName: "Type" },
     { field: "status", headerName: "Status" },
     {
@@ -232,7 +246,7 @@ const OrderManagement = () => {
       valueGetter: (params: { data?: { items?: unknown[] } }) =>
         params.data?.items?.length ?? 0,
       flex: 0,
-      width: 100
+      width: 100,
     },
     {
       field: "createdAt",
@@ -280,8 +294,13 @@ const OrderManagement = () => {
             columns={tableCols}
             data={filteredOrders}
             tableFilters={
-              <Stack direction="row" alignItems="center" gap={2}>
-                <FormControl size="small" sx={{ minWidth: 140 }}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                gap={2}
+                sx={{ width: { xs: "100%", md: "inherit" }, flexWrap: {xs: 'wrap', sm: 'nowrap'} }}
+              >
+                <FormControl size="small" sx={{ minWidth: 140, width: "100%" }}>
                   <InputLabel id="order-status-filter-label">Status</InputLabel>
                   <Select
                     labelId="order-status-filter-label"
@@ -300,7 +319,7 @@ const OrderManagement = () => {
                     ))}
                   </Select>
                 </FormControl>
-                <FormControl size="small" sx={{ minWidth: 140 }}>
+                <FormControl size="small" sx={{ minWidth: 140, width: "100%" }}>
                   <InputLabel id="order-type-filter-label">Type</InputLabel>
                   <Select
                     labelId="order-type-filter-label"

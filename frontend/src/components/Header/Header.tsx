@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Container, Stack } from "@mui/material";
+import { AppBar, Toolbar, Typography, Container } from "@mui/material";
 import { useDispatch } from "react-redux";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { logout } from "../../store/slice/AuthSlice";

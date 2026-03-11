@@ -69,13 +69,23 @@ const Table: React.FC<TableInterface> = ({
 
   return (
     <Box>
-      <Stack direction="row" alignItems="center" gap={2} sx={{ mb: 2 }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={2}
+        flexWrap={"wrap"}
+        sx={{
+          mb: 2,
+          maxWidth: { md: 500 },
+          width: { xs: "100%", md: "inherit" },
+        }}
+      >
         <TextField
           placeholder="Search..."
           size="small"
           value={quickFilterText}
           onChange={(e) => setQuickFilterText(e.target.value)}
-          sx={{ flex: 1, maxWidth: 300 }}
+          sx={{ flex: 1, minWidth: 150 }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
