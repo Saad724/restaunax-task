@@ -15,11 +15,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import EditIcon from "@mui/icons-material/Edit";
 import Table from "../../../components/Table/Table";
 import Input from "../../../components/Input/Input";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
-import { formatCurrency, formatDate } from "../../../utils/utils";
+import { formatCurrency, formatDate, truncateString } from "../../../utils/utils";
 import { OrderItem, OrderStatus, OrderType } from "../../../../../shared/types";
 import { Order } from "../../../../../shared/types";
 import { ordersApi } from "../../../services/api";
@@ -33,6 +34,21 @@ import AppCard from "../../../components/AppCard/AppCard";
 type OrderWithUser = Order & {
   user?: { id: string; name?: string; email?: string };
 };
+
+const orderItemsTableCols = [
+  { field: "name", headerName: "Name" },
+  { field: "quantity", headerName: "Qty" },
+  {
+    field: "price",
+    headerName: "Price",
+    valueFormatter: (params: { value: number }) => formatCurrency(params.value),
+  },
+  {
+    headerName: "Total",
+    valueGetter: (params: { data?: { quantity?: number; price?: number } }) =>
+      formatCurrency((params.data?.quantity ?? 0) * (params.data?.price ?? 0)),
+  },
+];
 
 const ORDER_STATUS_OPTIONS: { value: OrderStatus | ""; label: string }[] = [
   { value: "", label: "All statuses" },
@@ -52,20 +68,33 @@ const ORDER_TYPE_OPTIONS: { value: OrderType | ""; label: string }[] = [
 const ActionsCell = (props: {
   data?: { id?: string; status?: OrderStatus; items?: OrderItem[] };
   context?: {
+    onViewOrder?: (data: { items?: OrderItem[] }) => void;
     onViewItems?: (data: { items?: OrderItem[] }) => void;
     onUpdateStatus?: (data: { id?: string; status?: OrderStatus }) => void;
   };
 }) => {
-  const { onViewItems, onUpdateStatus } = props.context ?? {};
+  const { onViewItems, onViewOrder, onUpdateStatus } = props.context ?? {};
   const rowData = props.data ?? {};
   return (
-    <Stack direction="row" spacing={0.5} alignItems="center">
+    <Stack
+      direction="row"
+      spacing={0.5}
+      alignItems="center"
+      justifyContent={"flex-end"}
+    >
+      <IconButton
+        size="small"
+        onClick={() => onViewOrder?.(rowData)}
+        aria-label="View order"
+      >
+        <VisibilityIcon fontSize="small" />
+      </IconButton>
       <IconButton
         size="small"
         onClick={() => onViewItems?.(rowData)}
         aria-label="View order items"
       >
-        <VisibilityIcon fontSize="small" />
+        <FormatListBulletedIcon fontSize="small" />
       </IconButton>
       {rowData?.status !== "cancelled" && (
         <IconButton
@@ -92,6 +121,8 @@ const OrderManagement = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "">("");
   const [typeFilter, setTypeFilter] = useState<OrderType | "">("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
   const navigate = useNavigate();
 
   const fetchOrders = async () => {
@@ -137,8 +168,17 @@ const OrderManagement = () => {
     }
   }, []);
 
-  const handleViewItems = (rowData: Order) => {
+  const handleViewOrder = (rowData: Order) => {
     navigate(`/order/${rowData?.id}`);
+  };
+
+  const handleViewItems = (rowData: { items?: OrderItem[] }) => {
+    setSelectedItems(rowData.items ?? []);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
   };
 
   const handleOpenStatusDialog = (rowData: {
@@ -178,7 +218,7 @@ const OrderManagement = () => {
   };
 
   const tableCols = [
-    { field: "user.name", headerName: "Customer", flex: 0, width: 280 },
+    { field: "user.name", headerName: "Customer", cellRenderer: ({ data }: {data: Order}) => <Typography variant="caption">{truncateString(data?.user?.name)}</Typography>, flex: 0, width: 280 },
     { field: "orderType", headerName: "Type" },
     { field: "status", headerName: "Status" },
     {
@@ -188,20 +228,22 @@ const OrderManagement = () => {
         formatCurrency(params.value),
     },
     {
+      headerName: "Items",
+      valueGetter: (params: { data?: { items?: unknown[] } }) =>
+        params.data?.items?.length ?? 0,
+      flex: 0,
+      width: 100
+    },
+    {
       field: "createdAt",
       headerName: "Created",
       valueFormatter: (params: { value: string }) => formatDate(params.value),
     },
     {
-      headerName: "Items",
-      valueGetter: (params: { data?: { items?: unknown[] } }) =>
-        params.data?.items?.length ?? 0,
-    },
-    {
       headerName: "Actions",
       cellRenderer: ActionsCell,
       flex: 0,
-      width: 120,
+      width: 200,
       sortable: false,
       filter: false,
     },
@@ -278,12 +320,36 @@ const OrderManagement = () => {
               </Stack>
             }
             context={{
+              onViewOrder: handleViewOrder,
               onViewItems: handleViewItems,
               onUpdateStatus: handleOpenStatusDialog,
             }}
           />
         )}
-
+        <Dialog
+          open={dialogOpen}
+          onClose={handleCloseDialog}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Quick order items view</DialogTitle>
+          <DialogContent>
+            {selectedItems.length === 0 ? (
+              <Typography color="text.secondary">
+                No items in this order.
+              </Typography>
+            ) : (
+              <Table
+                columns={orderItemsTableCols}
+                data={selectedItems}
+                pagination={false}
+              />
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Close</Button>
+          </DialogActions>
+        </Dialog>
         <Dialog
           open={statusDialogOpen}
           onClose={handleCloseStatusDialog}

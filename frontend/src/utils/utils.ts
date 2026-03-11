@@ -13,3 +13,13 @@ export const formatDate = (value: string) => {
 export const formatCurrency = (value: number) => {
   return value != null ? `$${Number(value).toFixed(2)}` : "";
 };
+
+export const truncateString = (str: string | null | undefined) => {
+  const strMaxLength = 20;
+  if (str) {
+    if (str?.length > strMaxLength) {
+      return `${str.substring(0, strMaxLength)}...`;
+    }
+  }
+  return str;
+};

@@ -91,7 +91,7 @@ const AdminLayout = () => {
         <Box
           component="main"
           sx={{
-            maxWidth: "1920px",
+            maxWidth: "1440px",
             overflowX: "hidden",
           }}
         >

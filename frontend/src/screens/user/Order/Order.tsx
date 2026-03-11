@@ -1,15 +1,43 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Box, Chip, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  IconButton,
+  Stack,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import AppCard from "../../../components/AppCard/AppCard";
 import Loader from "../../../components/Loader/Loader";
 import Table from "../../../components/Table/Table";
 import { toast } from "react-toastify";
 import { ordersApi } from "../../../services/api";
-import { Order as OrderType, OrderItem } from "../../../../../shared/types";
+import {
+  Order as OrderType,
+  OrderItem,
+  OrderStatus,
+} from "../../../../../shared/types";
 import { formatCurrency, formatDate } from "../../../utils/utils";
 import { getSocket } from "../../../socket/socket";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
+import Input from "../../../components/Input/Input";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+
+const ORDER_STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
+  { value: "pending", label: "Pending" },
+  { value: "preparing", label: "Preparing" },
+  { value: "ready", label: "Ready" },
+  { value: "delivered", label: "Delivered" },
+  { value: "cancelled", label: "Cancelled" },
+];
 
 const Order = () => {
   const { id } = useParams();
@@ -17,7 +45,11 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [cancelLoader, setCancelLoader] = useState(false);
-  const navigate = useNavigate()
+  const [selectedStatus, setSelectedStatus] = useState<OrderStatus>("pending");
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state: RootState) => state.auth);
 
   const orderId = id?.trim();
   if (!orderId) {
@@ -34,6 +66,7 @@ const Order = () => {
       const data = await ordersApi.getOrderById(orderId);
 
       setOrder(data);
+      setSelectedStatus(data.status as OrderStatus);
     } catch (err: unknown) {
       console.error("Failed to fetch order by id", err);
       const message =
@@ -99,6 +132,35 @@ const Order = () => {
     } finally {
       setCancelLoader(false);
     }
+  };
+
+  const handleAdminUpdateStatus = async () => {
+    if (!order) return;
+    try {
+      setIsUpdatingStatus(true);
+      await ordersApi.updateOrderStatus(order.id, selectedStatus);
+      setOrder((prev) =>
+        prev ? { ...prev, status: selectedStatus } : prev,
+      );
+      toast.success("Order status updated");
+    } catch (error: unknown) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update status",
+      );
+    } finally {
+      setIsUpdatingStatus(false);
+      handleCloseStatusDialog()
+    }
+  };
+
+  const handleOpenStatusDialog = () => {
+    if (!order) return;
+    setSelectedStatus(order.status as OrderStatus);
+    setStatusDialogOpen(true);
+  };
+
+  const handleCloseStatusDialog = () => {
+    setStatusDialogOpen(false);
   };
 
   const itemsTableCols = useMemo(
@@ -194,8 +256,18 @@ const Order = () => {
           <Stack direction="row" gap={1} alignItems="center">
             <Chip label={`Status: ${order.status}`} variant="outlined" />
             <Chip label={`Type: ${order.orderType}`} variant="outlined" />
+            {userInfo?.role === "admin" && order.status !== "cancelled" && (
+              <IconButton
+                size="small"
+                aria-label="Update status"
+                onClick={handleOpenStatusDialog}
+              >
+                <FontAwesomeIcon icon={faPen} size="sm" />
+              </IconButton>
+            )}
           </Stack>
         </Stack>
+
       </AppCard>
 
       <AppCard>
@@ -231,7 +303,7 @@ const Order = () => {
             />
           </Box>
         </Stack>
-        {order?.status === "pending" && (
+        {order?.status === "pending" && userInfo?.role === "user" && (
           <Stack alignItems={"flex-end"} sx={{ marginBlock: "20px" }}>
             <PrimaryButton
               smallBtn
@@ -243,6 +315,45 @@ const Order = () => {
           </Stack>
         )}
       </AppCard>
+
+      {userInfo?.role === "admin" && (
+        <Dialog
+          open={statusDialogOpen}
+          onClose={handleCloseStatusDialog}
+          maxWidth="xs"
+          fullWidth
+        >
+          <DialogTitle>Update order status</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 1 }}>
+              <Input
+                name="status"
+                type="text"
+                label="Status"
+                select
+                options={ORDER_STATUS_OPTIONS}
+                value={selectedStatus}
+                onChange={(e: { target: { value: unknown } }) =>
+                  setSelectedStatus(
+                    (e.target.value as OrderStatus) ?? "pending",
+                  )
+                }
+                fullWidth
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseStatusDialog}>Cancel</Button>
+            <PrimaryButton
+              onClick={handleAdminUpdateStatus}
+              disabled={isUpdatingStatus}
+              smallBtn
+            >
+              {isUpdatingStatus ? "Updating..." : "Update"}
+            </PrimaryButton>
+          </DialogActions>
+        </Dialog>
+      )}
     </Stack>
   );
 };
