@@ -4,6 +4,7 @@ import cors from "cors";
 import ordersRouter from "./routes/orders";
 import authRouter from "./routes/auth";
 import menuRouter from "./routes/menu";
+import adminRouter from "./routes/admin";
 import UserSeeder from "./seeders/user-seeder";
 import Utils from "./utils/utils";
 import http from "http";
@@ -27,6 +28,7 @@ MenuSeeder.menuSeeder().then(() => console.log("Menu seeded"));
 app.use("/api/orders", ordersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/menu", menuRouter);
+app.use("/api/admin", adminRouter);
 
 // Health check endpoint
 app.get("/health", (_req, res) => {

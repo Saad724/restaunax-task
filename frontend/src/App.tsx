@@ -12,6 +12,7 @@ import OrderManagement from "./screens/admin/OrderManagement/OrderManagement";
 import Order from "./screens/user/Order/Order";
 import { useEffect } from "react";
 import { connectSocket } from "./socket/socket";
+import Dashboard from "./screens/admin/Dashboard/Dashboard";
 
 const App = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -44,7 +45,8 @@ const App = () => {
         {/* ADMIN ROUTES */}
         {userInfo && isAdmin && (
           <Route path="/" element={<AdminLayout />}>
-            <Route index element={<OrderManagement />} />
+            <Route index element={<Dashboard />} />
+            <Route path="order-management" element={<OrderManagement />} />
           </Route>
         )}
         <Route path="*" element={<>Route Not Found</>} />

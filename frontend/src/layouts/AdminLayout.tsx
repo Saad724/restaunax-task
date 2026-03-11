@@ -32,7 +32,7 @@ const AdminLayout = () => {
     }
   }, [userInfo]);
 
-  const navItems = [{ label: "Order Managment", path: "/" }];
+  const navItems = [{ label: "Dashboard", path: "/" }, { label: "Order Managment", path: "/order-management" }];
 
   const logoutHandler = () => {
     dispatch(logout());

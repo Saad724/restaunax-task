@@ -88,6 +88,43 @@ export const menuApi = {
   },
 };
 
+type ChartJsDataset = {
+  label: string;
+  data: number[];
+};
+
+type ChartJsData = {
+  labels: string[];
+  datasets: ChartJsDataset[];
+};
+
+export type AdminDashboardStats = {
+  countStats: {
+    users: number;
+    orders: number;
+    menu: number;
+  };
+  dataStats: {
+    pieChartData: ChartJsData;
+    barChartData: ChartJsData;
+  };
+};
+
+export const adminApi = {
+  async getDashboard(): Promise<AdminDashboardStats> {
+    const response = (await axiosWrapper(
+      "get",
+      `${API_BASE_URL}/admin/dashboard`,
+    )) as ApiResponse<AdminDashboardStats>;
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to fetch dashboard");
+    }
+
+    return response.data;
+  },
+};
+
 export interface LoginResponse {
   user: {
     id: string;
