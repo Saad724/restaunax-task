@@ -14,10 +14,10 @@ const getAllOrders = async (status?: OrderStatus | undefined): Promise<Order[]> 
   return allOrders;
 };
 
-const getOrderById = async (id: string): Promise<Order | null> => {
+const getOrderById = async (id: string, userId: string): Promise<Order | null> => {
   const order = await prisma.order.findUnique({
-    where: { id },
-    include: { items: true },
+    where: { id, userId },
+    include: { items: true, user: true },
   });
   return order as Order | null;
 };
@@ -79,7 +79,7 @@ const updateOrderStatus = async (
     });
   }
 
-  return getOrderById(id);
+  return getOrderById(id, order.userId);
 };
 
 const OrderService = {

@@ -9,6 +9,7 @@ import Menu from "./screens/user/Menu/Menu";
 import Cart from "./screens/user/Cart/Cart";
 import AdminLayout from "./layouts/AdminLayout";
 import OrderManagement from "./screens/admin/OrderManagement/OrderManagement";
+import Order from "./screens/user/Order/Order";
 
 const App = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Menu />} />
             <Route path="cart" element={<Cart />} />
+            <Route path="order/:id" element={<Order />} />
           </Route>
         )}
 

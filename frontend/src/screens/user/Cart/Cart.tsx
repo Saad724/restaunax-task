@@ -84,10 +84,10 @@ const Cart = () => {
     }
     try {
       setIsOrdering(true);
-      await ordersApi.createOrder("delivery", cartItems as OrderItem[]);
+      const order = await ordersApi.createOrder("delivery", cartItems as OrderItem[]);
       dispatch(clearCart());
       toast.success("Order created successfully!");
-      navigate("/");
+      navigate(`/order/${order?.id}`);
     } catch (error: unknown) {
       toast.error(error instanceof Error ? error.message : "Order failed");
     } finally {

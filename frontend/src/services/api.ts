@@ -34,13 +34,11 @@ export const ordersApi = {
    * Fetch a single order by ID
    */
   async getOrderById(_id: string): Promise<Order> {
-    // TODO: Implement this function
-    // 1. Make a GET request to /api/orders/:id
-    // 2. Handle 404 errors
-    // 3. Return the parsed JSON response
-    // Example: const response = await fetch(`${API_BASE_URL}/orders/${id}`);
-
-    throw new Error("Not implemented yet");
+    const response = (await axiosWrapper("get", `${API_BASE_URL}/orders/${_id}`)) as ApiResponse<Order>;
+    if (!response.success) {
+      throw new Error(response.message || "Failed to fetch order");
+    }
+    return response.data;
   },
 
   /**

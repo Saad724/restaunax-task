@@ -33,8 +33,9 @@ router.get(
  */
 router.get(
   "/:id",
+  authMiddleware,
   celebrate(getOrderByIdParamsSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { statusCode, ...rest } = await OrderController.getOrderById(req, res, next);
     res.status(statusCode).json(rest);
   }
@@ -60,6 +61,7 @@ router.post(
  */
 router.patch(
   "/:id",
+  authMiddleware,
   celebrate(updateOrderStatusSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     const { statusCode, ...rest } = await OrderController.updateOrderStatus(req, res, next);

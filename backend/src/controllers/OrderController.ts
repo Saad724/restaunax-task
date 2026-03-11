@@ -31,13 +31,18 @@ const getAllOrders = async (
 };
 
 const getOrderById = async (
-  req: Request,
+  req: AuthRequest,
   _res: Response,
   _next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
-    const order = await OrderService.getOrderById(id);
+    const user = req.user;
+    if (!user) {
+      throw new Error("User not found!");
+    }
+
+    const order = await OrderService.getOrderById(id, user?.id);
     if (order === null) {
       return Utils.sendResponse(false, null, 404, "Order not found");
     }

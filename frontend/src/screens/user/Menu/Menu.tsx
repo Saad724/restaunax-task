@@ -1,7 +1,7 @@
-import { Box, Stack, Typography, IconButton } from "@mui/material";
+import { Box, Stack, Typography, IconButton, Badge } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { itemsMockData } from "../../../utils/mockData";
 import AppCard from "../../../components/AppCard/AppCard";
 import { OrderItem } from "../../../../../shared/types";
@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartFlatbed } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../store/store";
 
 const MIN_QUANTITY = 1;
 const DEFAULT_IMAGE =
@@ -103,7 +104,8 @@ const MenuCard = ({ item }: MenuCardProps) => {
 };
 
 const Menu = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { items } = useSelector((state: RootState) => state.cart);
   return (
     <Stack>
       <Stack
@@ -121,10 +123,17 @@ const Menu = () => {
         </Box>
         <IconButton
           size="small"
-          onClick={() => navigate('/cart')}
+          onClick={() => navigate("/cart")}
           aria-label="View cart items"
           color="primary"
+          sx={{ position: "primary" }}
         >
+          <Badge
+            badgeContent={items?.length}
+            color="primary"
+            overlap="circular"
+            sx={{ position: "absolute", top: -5, right: 0 }}
+          />
           <FontAwesomeIcon icon={faCartFlatbed} />
         </IconButton>
       </Stack>

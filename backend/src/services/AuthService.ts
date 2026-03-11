@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma";
+import { User } from "../../../shared/types";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "secret-hash";
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 10;
@@ -18,15 +19,7 @@ export interface LoginInput {
 }
 
 export interface LoginResult {
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-    phone: string;
-    role: string;
-    rewardPoints: number;
-    createdAt: Date;
-  };
+  user: User;
   token: string;
 }
 

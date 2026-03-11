@@ -1,28 +1,39 @@
 // Shared TypeScript types for Restaunax Order Management
 
-export type OrderStatus = 'pending' | 'preparing' | 'ready' | 'delivered';
-export type OrderType = 'delivery' | 'pickup';
+export type OrderStatus = "pending" | "preparing" | "ready" | "delivered";
+export type OrderType = "delivery" | "pickup";
+
+export interface User {
+  id: string;
+  name: string | null;
+  email: string;
+  phone: string;
+  rewardPoints: number;
+  role: string;
+  createdAt: Date;
+}
 
 /** Order item */
 export interface OrderItem {
   id: string;
   name: string;
   quantity: number;
-  image?: any
+  image?: any;
   price: number; // float
   createdAt: Date; // ISO string
-  orderId?: string;  // optional link to order
+  orderId?: string; // optional link to order
 }
 
 /** Order entity */
 export interface Order {
   id: string;
-  userId: string;     // link to a User
+  userId: string; // link to a User
+  user?: User;
   orderType: OrderType;
   status: OrderStatus;
   items: OrderItem[];
-  total: number;      // float
-  createdAt: Date;  // ISO 8601 string
+  total: number; // float
+  createdAt: Date; // ISO 8601 string
 }
 
 /** API Response types */
@@ -35,7 +46,7 @@ export interface ApiError {
 export interface CreateOrderRequest {
   userId: string;
   orderType: OrderType;
-  items: Omit<OrderItem, 'id' | 'createdAt'>[];
+  items: Omit<OrderItem, "id" | "createdAt">[];
 }
 
 export interface UpdateOrderStatusRequest {
