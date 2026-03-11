@@ -50,35 +50,90 @@ const MenuCard = ({ item }: MenuCardProps) => {
   };
 
   return (
-    <AppCard sx={{ flex: 1, minWidth: 300, maxWidth: 300 }}>
+    <AppCard
+      sx={{
+        flex: 1,
+        minWidth: 300,
+        maxWidth: 320,
+        overflow: "hidden",
+        transition: "transform 160ms ease, box-shadow 160ms ease",
+        "&:hover": {
+          transform: "translateY(-2px)",
+          boxShadow: 2,
+        },
+      }}
+    >
       <Stack gap={2}>
-        <img
-          src={item?.image || DEFAULT_IMAGE}
-          height={200}
-          style={{ borderRadius: "10px", objectFit: "cover" }}
-          alt={item?.name}
-        />
-        <Box>
-          <Typography variant="h6">{item?.name}</Typography>
-          <Typography variant="subtitle2">
-            Price: ${lineTotal.toFixed(2)}{" "}
-            {quantity > 1 && `(${item?.price} × ${quantity})`}
-          </Typography>
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: 200,
+            borderRadius: 2,
+            overflow: "hidden",
+            backgroundColor: "action.hover",
+          }}
+        >
+          <Box
+            component="img"
+            src={item?.image || DEFAULT_IMAGE}
+            alt={item?.name}
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
         </Box>
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Typography variant="subtitle1">Quantity</Typography>
-          <Stack direction="row" alignItems="center" spacing={1}>
+
+        <Stack gap={0.5}>
+          <Typography variant="h6" sx={{ lineHeight: 1.25 }}>
+            {item?.name}
+          </Typography>
+          <Stack
+            direction="row"
+            alignItems="baseline"
+            justifyContent="space-between"
+            gap={2}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              ${lineTotal.toFixed(2)}
+            </Typography>
+            <Typography variant="caption" color="text.disabled">
+              {quantity > 1 ? `(${item?.price} × ${quantity})` : `Unit: $${item?.price}`}
+            </Typography>
+          </Stack>
+        </Stack>
+
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          gap={2}
+          sx={{
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            px: 1,
+            py: 0.5,
+          }}
+        >
+          <Typography variant="subtitle2" color="text.secondary">
+            Quantity
+          </Typography>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
             <IconButton
               size="small"
               onClick={handleDecrease}
               disabled={quantity <= MIN_QUANTITY}
               aria-label="Decrease quantity"
             >
-              <RemoveIcon />
+              <RemoveIcon fontSize="small" />
             </IconButton>
             <Typography
               component="span"
-              sx={{ minWidth: 24, textAlign: "center" }}
+              sx={{ minWidth: 28, textAlign: "center", fontWeight: 600 }}
             >
               {quantity}
             </Typography>
@@ -87,13 +142,20 @@ const MenuCard = ({ item }: MenuCardProps) => {
               onClick={handleIncrease}
               aria-label="Increase quantity"
             >
-              <AddIcon />
+              <AddIcon fontSize="small" />
             </IconButton>
           </Stack>
         </Stack>
+
         <PrimaryButton
           variant="outlined"
-          sx={{ width: "100%" }}
+          sx={{
+            width: "100%",
+            borderRadius: 2,
+            py: 1.1,
+            textTransform: "none",
+            fontWeight: 600,
+          }}
           onClick={handleAddToCart}
         >
           Add to cart
