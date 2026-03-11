@@ -85,7 +85,7 @@ const Table: React.FC<TableInterface> = ({
           size="small"
           value={quickFilterText}
           onChange={(e) => setQuickFilterText(e.target.value)}
-          sx={{ flex: 1, minWidth: 150 }}
+          sx={{ flex: 1, ...(!tableFilters && {maxWidth: 250}) }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

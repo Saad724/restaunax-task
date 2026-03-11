@@ -18,7 +18,7 @@ const Header = () => {
   return (
     <AppBar position="static" color="transparent" elevation={0}>
       <Container>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Toolbar sx={{ justifyContent: "space-between", paddingInline: '0px !important' }}>
           <Typography
             component={Link}
             to="/"
