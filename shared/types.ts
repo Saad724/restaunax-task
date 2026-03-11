@@ -18,10 +18,16 @@ export interface OrderItem {
   id: string;
   name: string;
   quantity: number;
-  image?: any;
   price: number; // float
   createdAt: Date; // ISO string
   orderId?: string; // optional link to order
+}
+export interface MenuItem {
+  id?: string;
+  name: string;
+  image?: string;
+  price: number; // float
+  createdAt: Date; // ISO string
 }
 
 /** Order entity */

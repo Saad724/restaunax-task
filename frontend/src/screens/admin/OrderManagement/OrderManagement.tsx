@@ -105,27 +105,20 @@ const OrderManagement = () => {
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "">("");
   const [typeFilter, setTypeFilter] = useState<OrderType | "">("");
 
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const data = await ordersApi.getOrders();
+      setOrders(data as OrderWithUser[]);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to load orders");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let cancelled = false;
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const data = await ordersApi.getOrders();
-        if (!cancelled) setOrders(data as OrderWithUser[]);
-      } catch (err: unknown) {
-        if (!cancelled) {
-          toast.error(
-            err instanceof Error ? err.message : "Failed to load orders",
-          );
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
     fetchOrders();
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   useEffect(() => {
@@ -133,7 +126,7 @@ const OrderManagement = () => {
       const socket = getSocket();
       const handleOrderCreated = (order: OrderWithUser) => {
         setOrders((prev) => [order, ...prev]);
-        toast.success('New Order Recieved!')
+        toast.success("New Order Recieved!");
       };
       socket.on("order-created", handleOrderCreated);
       return () => {

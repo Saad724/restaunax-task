@@ -1,4 +1,4 @@
-import { Order, OrderItem, OrderStatus } from "../../../shared/types";
+import { Order, OrderItem, OrderStatus, MenuItem } from "../../../shared/types";
 import axiosWrapper from "../api/ApiWrapper";
 
 // API base URL - candidates will use this when implementing their API calls
@@ -69,6 +69,21 @@ export const ordersApi = {
     if (!response.success) {
       throw new Error(response.message || "Order not created");
     }
+    return response.data;
+  },
+};
+
+export const menuApi = {
+  async getMenu(): Promise<MenuItem[]> {
+    const response = (await axiosWrapper(
+      "get",
+      `${API_BASE_URL}/menu`,
+    )) as ApiResponse<MenuItem[]>;
+
+    if (!response.success || !Array.isArray(response.data)) {
+      throw new Error(response.message || "Failed to fetch menu");
+    }
+
     return response.data;
   },
 };

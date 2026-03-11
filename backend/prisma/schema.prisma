@@ -70,3 +70,13 @@ model OrderItem {
 
   @@map("order_items")
 }
+
+model Menu {
+  id        String   @id @default(uuid())
+  name      String
+  image     String   @default("")
+  price     Float
+  createdAt DateTime @default(now())
+
+  @@map("menu")
+}

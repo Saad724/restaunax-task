@@ -27,12 +27,15 @@ const hashPassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, SALT_ROUNDS);
 };
 
-const comparePassword = async (plain: string, hashed: string): Promise<boolean> => {
+const comparePassword = async (
+  plain: string,
+  hashed: string,
+): Promise<boolean> => {
   return bcrypt.compare(plain, hashed);
 };
 
 const signToken = (userId: string): string => {
-  return jwt.sign({ sub: userId }, JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign({ sub: userId }, JWT_SECRET); // Not provided expiry as we are not implementing refresh token for now
 };
 
 const register = async (input: RegisterInput): Promise<LoginResult> => {

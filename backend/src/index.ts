@@ -3,10 +3,12 @@ import express from "express";
 import cors from "cors";
 import ordersRouter from "./routes/orders";
 import authRouter from "./routes/auth";
+import menuRouter from "./routes/menu";
 import UserSeeder from "./seeders/user-seeder";
 import Utils from "./utils/utils";
 import http from "http";
 import { initSocket } from "./socket/socket";
+import MenuSeeder from "./seeders/menu-seeder";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,10 +21,12 @@ app.use(cors());
 app.use(express.json());
 
 UserSeeder.adminSeed().then(() => console.log("Admin seeded"));
+MenuSeeder.menuSeeder().then(() => console.log("Menu seeded"));
 
 // Routes
 app.use("/api/orders", ordersRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/menu", menuRouter);
 
 // Health check endpoint
 app.get("/health", (_req, res) => {
