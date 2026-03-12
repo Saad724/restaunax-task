@@ -17,6 +17,15 @@ Frontend – Handles the user interface for both User and Admin panels.
 
 Backend – Provides APIs, authentication, database interaction, and real time communication.
 
+## 🌐 Project Stack
+
+**Project stack:**
+- React Typescript
+- Material UI
+- Node.js/Express
+- Socket.IO
+- PostgreSQL (Prisma)
+
 ## ⚙️ How to Setup
 
 Follow these steps to run the project locally.
@@ -117,29 +126,26 @@ The frontend is structured into two main panels:
 
 **User Panel**
 
-Users can:
-
-    Browse the food menu
-    Add menu items to their cart
-    Place orders
-    View their order history
-    Track order status updates in real time
+**Users can:**
+- Browse the food menu
+- Add menu items to their cart
+- Place orders
+- View their order history
+- Track order status updates in real time
 
 **Admin Panel**
 
-Administrators can:
-
-    View application analytics and statistics
-    Manage and update orders
-    Monitor active orders in the system
-    Update order status
+**Administrators can:**
+- View application analytics and statistics
+- Manage and update orders
+- Monitor active orders in the system
+- Update order status
 
 When an order status is updated by the admin, the change is reflected in real time on the user's order page.
 
-Additionally:
-
-    When a new order is created, admins receive real time notifications.
-    Both panels are protected to ensure unauthorized users cannot access sensitive data.
+**Additionally:**
+- When a new order is created, admins receive real time notifications.
+- Both panels are protected to ensure unauthorized users cannot access sensitive data.
 
 ## 🎨 Design Decisions
 
@@ -147,17 +153,17 @@ The application's UI was intentionally designed to resemble a professional data 
 
 ### 1. Design principles used:
 
-    Minimalistic interface
-    Clear data hierarchy
-    Simple and intuitive navigation
-    Focused user workflows
+- Minimalistic interface
+- Clear data hierarchy
+- Simple and intuitive navigation
+- Focused user workflows
 
 ### 2. Benefits of this approach:
 
-    Faster user onboarding
-    Reduced visual clutter
-    Easier order tracking and management
-    Improved usability for both admins and customers
+- Faster user onboarding
+- Reduced visual clutter
+- Easier order tracking and management
+- Improved usability for both admins and customers
 
 The clean dashboard style design ensures the application feels professional, efficient, and easy to use.
 
@@ -173,9 +179,9 @@ Admins can view important application statistics including order trends and acti
 
 Implemented using Socket.io, enabling:
 
-    Instant order status updates
-    Real time notifications for new orders
-    Live synchronization between admin and user panels for orders
+- Instant order status updates
+- Real time notifications for new orders
+- Live synchronization between admin and user panels for orders
 
 ### 3. Table Search & Filters
 
