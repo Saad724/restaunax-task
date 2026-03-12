@@ -1,4 +1,4 @@
-## 🍽️ Food Ordering Application
+## 🍽️ Food Ordering Application Assessment
 
 A full-stack food ordering platform with separate User and Admin panels, built with a modern web stack.
 The application allows users to browse menu items, place orders, and track their order status, while administrators can manage orders and monitor application analytics in real time.
@@ -14,6 +14,7 @@ root
 ```
 
 Frontend – Handles the user interface for both User and Admin panels.
+
 Backend – Provides APIs, authentication, database interaction, and real-time communication.
 
 ## ⚙️ How to Setup
@@ -37,6 +38,8 @@ Both frontend and backend require environment variables.
 
 Create .env files inside both folders and add the required variables.
 
+View .env.example file for variable names.
+
 Example structure:
 
 Backend .env
@@ -48,7 +51,7 @@ JWT_SECRET=
 SALT_ROUNDS=
 ```
 
-frontend .env
+Frontend .env
 
 ```
 VITE_APP_NAME=
@@ -107,27 +110,27 @@ The frontend is structured into two main panels:
 
 Users can:
 
-    - Browse the food menu
-    - Add menu items to their cart
-    - Place orders
-    - View their order history
-    - Track order status updates in real time
+    Browse the food menu
+    Add menu items to their cart
+    Place orders
+    View their order history
+    Track order status updates in real time
 
 **Admin Panel**
 
 Administrators can:
 
-    - View application analytics and statistics
-    - Manage and update orders
-    - Monitor active orders in the system
-    - Update order status
+    View application analytics and statistics
+    Manage and update orders
+    Monitor active orders in the system
+    Update order status
 
 When an order status is updated by the admin, the change is reflected in real time on the user's order page.
 
 Additionally:
 
-    - When a new order is created, admins receive real-time notifications.
-    - Both panels are protected to ensure unauthorized users cannot access sensitive data.
+    When a new order is created, admins receive real-time notifications.
+    Both panels are protected to ensure unauthorized users cannot access sensitive data.
 
 ## 🎨 Design Decisions
 
@@ -135,17 +138,17 @@ The application's UI was intentionally designed to resemble a professional data 
 
 ### Design principles used:
 
-    - Minimalistic interface
-    - Clear data hierarchy
-    - Simple and intuitive navigation
-    - Focused user workflows
+    Minimalistic interface
+    Clear data hierarchy
+    Simple and intuitive navigation
+    Focused user workflows
 
 ### Benefits of this approach:
 
-    - Faster user onboarding
-    - Reduced visual clutter
-    - Easier order tracking and management
-    - Improved usability for both admins and customers
+    Faster user onboarding
+    Reduced visual clutter
+    Easier order tracking and management
+    Improved usability for both admins and customers
 
 The clean dashboard-style design ensures the application feels professional, efficient, and easy to use.
 
@@ -153,18 +156,18 @@ The clean dashboard-style design ensures the application feels professional, eff
 
 The application includes several enhancements beyond the basic ordering functionality:
 
-### 📊 Analytics Dashboard
+### Analytics Dashboard
 
 Admins can view important application statistics including order trends and activity metrics.
 
-### ⚡ Real-Time Updates
+### Real-Time Updates
 
 Implemented using Socket.io, enabling:
 
-    - Instant order status updates
-    - Real-time notifications for new orders
-    - Live synchronization between admin and user panels
+    Instant order status updates
+    Real-time notifications for new orders
+    Live synchronization between admin and user panels for orders
 
-### 🔍 Table Search & Filters
+### Table Search & Filters
 
 Admin tables include search and filtering capabilities, allowing quick access to specific orders or data.
