@@ -186,3 +186,60 @@ Implemented using Socket.io, enabling:
 ### 3. Table Search & Filters
 
 Admin tables include search and filtering capabilities, allowing quick access to specific orders or data.
+
+## ⭐ Demo Screenshots ##
+
+### 1. Authentication Screens ###
+
+- **Signin Screen**
+
+<img width="3840" height="1458" alt="auth-1" src="https://github.com/user-attachments/assets/cd5825de-d6bb-482b-96cf-aaba23ff6623" />
+
+- **Signup Screen**
+
+<img width="3840" height="1458" alt="auth-2" src="https://github.com/user-attachments/assets/d0c3efda-5c3e-424e-96e9-36d5418baf67" />
+
+### 2. User Panel Screens ###
+
+- **Menu Screen**
+
+<img width="3700" height="4340" alt="user-1" src="https://github.com/user-attachments/assets/7957d250-cf60-411c-b093-2aa370ce5f57" />
+
+- **User Cart Screen**
+
+<img width="3700" height="1744" alt="user-2" src="https://github.com/user-attachments/assets/4d27eba0-04f9-4870-9600-a65657b7370f" />
+
+- **User Orders Screen**
+
+<img width="3700" height="2076" alt="user-3" src="https://github.com/user-attachments/assets/a1fd065f-6024-4120-825a-97b8899209ef" />
+
+- **User Order Details Screen**
+
+<img width="3700" height="1800" alt="user-4" src="https://github.com/user-attachments/assets/05037940-92ce-447c-8ed7-c876d6267518" />
+
+### 3. Admin Panel Screens ###
+
+- **Admin Dashboard Screen**
+
+<img width="3748" height="1744" alt="admin-1" src="https://github.com/user-attachments/assets/88d549b7-283b-41c4-bc52-fcdd903c2355" />
+
+- **Admin Order Management Screen**
+
+<img width="3700" height="1668" alt="admin-2" src="https://github.com/user-attachments/assets/1f3023a5-a8ea-4887-9910-0b1dfb516a86" />
+
+- **Order Items List Quick View**
+
+<img width="3700" height="1744" alt="admin-3" src="https://github.com/user-attachments/assets/876c3b77-855b-4145-91bb-676baf164ba0" />
+
+- **Quick Update Order View**
+
+<img width="3700" height="1744" alt="admin-4" src="https://github.com/user-attachments/assets/b6f30e25-f17e-4ad7-9c7e-df8d132b2d07" />
+
+- **Admin Order Details Screen**
+
+<img width="2772" height="1744" alt="admin-5" src="https://github.com/user-attachments/assets/4e81962e-2789-4fac-be6b-d39090d1ff23" />
+
+- **Admin Update Order Status**
+
+<img width="2772" height="1744" alt="admin-6" src="https://github.com/user-attachments/assets/c01ea751-2ba3-4c95-a075-397be49935a0" />
+
