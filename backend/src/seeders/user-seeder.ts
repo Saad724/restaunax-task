@@ -1,5 +1,7 @@
-import { UserCreateInput } from "../generated/prisma/models";
+import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma";
+
+const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 10;
 
 const adminSeed = async () => {
   const adminCheck = await prisma.user.findFirst({
@@ -12,15 +14,16 @@ const adminSeed = async () => {
     return;
   }
 
-  const adminSeederData: UserCreateInput = {
-    name: "Admin",
-    email: "admin@mail.com",
-    phone: "+123456789",
-    role: "admin",
-  };
+  const hashedPassword = await bcrypt.hash("admin123", SALT_ROUNDS);
 
   const admin = await prisma.user.create({
-    data: adminSeederData,
+    data: {
+      name: "Admin",
+      email: "admin@mail.com",
+      phone: "+123456789",
+      password: hashedPassword,
+      role: "admin",
+    },
   });
 
   console.log("admin created", admin);

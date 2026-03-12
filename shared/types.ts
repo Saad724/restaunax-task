@@ -1,50 +1,59 @@
-/**
- * Shared TypeScript types for Restaunax Order Management
- * These types are used by both frontend and backend for type safety
- */
+// Shared TypeScript types for Restaunax Order Management
 
-export type OrderStatus = 'pending' | 'preparing' | 'ready' | 'delivered';
+export type OrderStatus = "pending" | "preparing" | "ready" | "delivered" | "cancelled";
+export type OrderType = "delivery" | "pickup";
+export type UserRole = "admin" | "user";
 
-export type OrderType = 'delivery' | 'pickup';
+export interface User {
+  id: string;
+  name: string | null;
+  email: string;
+  phone: string;
+  rewardPoints: number;
+  role: UserRole;
+  createdAt: Date;
+}
 
+/** Order item */
 export interface OrderItem {
   id: string;
   name: string;
   quantity: number;
-  price: number;
+  price: number; // float
+  createdAt: Date; // ISO string
+  orderId?: string; // optional link to order
+}
+export interface MenuItem {
+  id?: string;
+  name: string;
+  image?: string;
+  price: number; // float
+  createdAt: Date; // ISO string
 }
 
-/**
- * Order entity
- * NOTE: This structure has customer data embedded directly in the order
- * Consider whether this is the best data modeling approach
- */
+/** Order entity */
 export interface Order {
   id: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  customerRewardPoints: number;
+  userId: string; // link to a User
+  user?: User;
   orderType: OrderType;
   status: OrderStatus;
   items: OrderItem[];
-  total: number;
-  createdAt: string; // ISO 8601 date string
+  total: number; // float
+  createdAt: Date; // ISO 8601 string
 }
 
-// API Response types
+/** API Response types */
 export interface ApiError {
   error: string;
   message?: string;
 }
 
-// Request body types
+/** Request body types */
 export interface CreateOrderRequest {
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
+  userId: string;
   orderType: OrderType;
-  items: Omit<OrderItem, 'id'>[];
+  items: Omit<OrderItem, "id" | "createdAt">[];
 }
 
 export interface UpdateOrderStatusRequest {

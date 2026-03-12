@@ -1,291 +1,170 @@
-# Restaunax Full-Stack Developer Technical Assessment
+## 🍽️ Food Ordering Application
 
-Welcome to the Restaunax Technical Assessment! 🍕🚀
+A full-stack food ordering platform with separate User and Admin panels, built with a modern web stack.
+The application allows users to browse menu items, place orders, and track their order status, while administrators can manage orders and monitor application analytics in real time.
 
-Thank you for your interest in joining our team at Restaunax. This assessment is designed to evaluate your essential full-stack development skills within the context of our restaurant management platform.
+## 📦 Project Structure
 
-We've provided starter code to help you focus on implementing functionality rather than configuration. Take the time you need to showcase your skills.
+The project is divided into two main parts:
 
-## 🚀 Getting Started
+```
+root
+ ├── frontend
+ └── backend
+```
 
-### 1. Clone and Setup
+Frontend – Handles the user interface for both User and Admin panels.
+Backend – Provides APIs, authentication, database interaction, and real-time communication.
 
-```bash
-# Clone this repository
-git clone https://github.com/Restaunax/restaunax-technical-assessment.git
-cd restaunax-technical-assessment
+## ⚙️ How to Setup
 
-# Install backend dependencies
+Follow these steps to run the project locally.
+
+### 1. Install Dependencies
+Install required packages for both frontend and backend.
+
+```
 cd backend
 npm install
 
-# Install frontend dependencies
 cd ../frontend
 npm install
 ```
 
-### 2. Run the Application
+### 2. Configure Environment Variables
 
-```bash
-# Terminal 1 - Run backend (from /backend directory)
+Both frontend and backend require environment variables.
+
+Create .env files inside both folders and add the required variables.
+
+Example structure:
+
+Backend .env
+
+```
+PORT=
+DATABASE_CON=
+JWT_SECRET=
+SALT_ROUNDS=
+```
+
+frontend .env
+
+```
+VITE_APP_NAME=
+VITE_BACKEND_URL=
+VITE_API_URL=
+```
+
+Fill these variables according to your environment.
+
+### 3. Run the Development Servers
+
+Start both frontend and backend servers.
+
+Start Backend
+
+```
+cd backend
 npm run dev
+```
 
-# Terminal 2 - Run frontend (from /frontend directory)
+Start Frontend
+
+```
+cd frontend
 npm run dev
 ```
 
-The backend will run on `http://localhost:3000` and frontend on `http://localhost:5173`.
+Once both servers are running, the application should be accessible in your browser.
 
-## 📋 The Scenario
+## 🏗 Implementation Notes
 
-As a developer at Restaunax, you'll be working on our restaurant management system. Your task is to implement a **Real-time Order Management Dashboard** that allows restaurant owners to view and update orders.
+### Backend Approach
+The backend follows the MVC (Model–View–Controller) architecture to ensure maintainability and scalability.
 
-## ✅ Technical Requirements
+**Key implementation details:**
 
-**Required:**
+- Route Protection
+    - All sensitive routes are protected using authentication middleware to ensure only authorized users can access them.
 
-- ✅ **TypeScript** (strict mode) for both frontend and backend
-- ✅ **React** with **Material-UI** components
-- ✅ **Node.js/Express** backend
-- ✅ Type-safe API contracts between frontend and backend
+- Input Validation
+    - Request data is validated using Joi with Celebrate middleware to ensure data integrity and prevent malformed requests.
 
-**Data Storage (Choose One):**
+- Controller-Based Logic
+    - Each feature is handled by dedicated controllers responsible for business logic.
 
-- **Highly Recommended**: PostgreSQL with Prisma running in a Docker container (demonstrates production-ready skills)
-- Use the provided `mockOrders.ts` file (simplest approach, acceptable)
-- In-memory data structure
-- JSON file storage
-- SQLite
+- Service Layer
+    - Database interactions are abstracted through service functions to maintain separation of concerns and cleaner controllers.
 
-**Note:** While we've provided mock data for quick setup, we highly value candidates who can set up a proper database with Prisma and Docker. This demonstrates real-world full-stack capabilities.
+This layered architecture helps keep the backend modular, testable, and easy to extend.
 
-## 🎯 Your Task
+### Frontend Approach
 
-### 1. Backend API
+The frontend is structured into two main panels:
 
-Implement endpoints in `backend/src/routes/orders.ts`. At minimum, you should implement:
+**User Panel**
 
-**Core Requirements:**
-- `GET /api/orders` — List all orders (with optional status filtering via query params)
-- `GET /api/orders/:id` — Retrieve a specific order by ID
+Users can:
 
-**Optional (Recommended):**
-- `PATCH /api/orders/:id` — Update order status
-- `POST /api/orders` — Create a new order
+    - Browse the food menu
+    - Add menu items to their cart
+    - Place orders
+    - View their order history
+    - Track order status updates in real time
 
-Feel free to add additional endpoints or functionality that you think would be useful for an order management system.
+**Admin Panel**
 
-**Order Schema** (already defined in `shared/types.ts`):
+Administrators can:
 
-| Field                | Type                                               |
-| -------------------- | -------------------------------------------------- |
-| id                   | string                                             |
-| customerName         | string                                             |
-| customerEmail        | string                                             |
-| customerPhone        | string                                             |
-| customerRewardPoints | number                                             |
-| orderType            | "delivery" \| "pickup"                             |
-| items                | OrderItem[]                                        |
-| status               | "pending" \| "preparing" \| "ready" \| "delivered" |
-| total                | number                                             |
-| createdAt            | string (ISO format)                                |
+    - View application analytics and statistics
+    - Manage and update orders
+    - Monitor active orders in the system
+    - Update order status
 
-> **💡 Data Modeling Challenge**: Notice how customer information is embedded in each order? Consider whether this is the best approach for a real-world application. How might you improve this data structure?
+When an order status is updated by the admin, the change is reflected in real time on the user's order page.
 
-**Order Item Schema:**
+Additionally:
 
-| Field    | Type   |
-| -------- | ------ |
-| id       | string |
-| name     | string |
-| quantity | number |
-| price    | number |
+    - When a new order is created, admins receive real-time notifications.
+    - Both panels are protected to ensure unauthorized users cannot access sensitive data.
 
-### 2. Frontend UI
+## 🎨 Design Decisions
 
-Build a dashboard in `frontend/src/` using **React and Material-UI**. At minimum, your UI should:
+The application's UI was intentionally designed to resemble a professional data management dashboard.
 
-**Core Requirements:**
-- Display a list of orders with relevant information
-- Filter or group orders by status
-- Show loading and error states appropriately
-- Use Material-UI components
+### Design principles used:
 
-**Get Creative:**
-- Design the layout however you think works best
-- Add any additional features you think would enhance the user experience
-- Show us your UI/UX sensibilities
-- If you implemented PATCH for status updates, add UI controls for it
+    - Minimalistic interface
+    - Clear data hierarchy
+    - Simple and intuitive navigation
+    - Focused user workflows
 
-### 3. Integration
+### Benefits of this approach:
 
-- Connect your frontend to the backend API
-- Ensure type safety between frontend and backend using shared types
-- Handle errors appropriately (network failures, invalid data, etc.)
+    - Faster user onboarding
+    - Reduced visual clutter
+    - Easier order tracking and management
+    - Improved usability for both admins and customers
 
-## 🎨 What We're Looking For
+The clean dashboard-style design ensures the application feels professional, efficient, and easy to use.
 
-| Area                  | What We Value                                       |
-| --------------------- | --------------------------------------------------- |
-| **TypeScript Usage**  | Proper typing, no `any`, leveraging type inference  |
-| **Code Organization** | Clean folder structure, separation of concerns      |
-| **UI Implementation** | Proper use of Material-UI components                |
-| **User Experience**   | Intuitive, functional, responsive interface         |
-| **API Design**        | RESTful patterns, proper HTTP methods and responses |
-| **Error Handling**    | Graceful handling of common errors                  |
-| **Code Quality**      | Readable, maintainable code with consistent style   |
+## 🚀 Additional Features
 
-## 🌟 Bonus Ideas (Optional)
+The application includes several enhancements beyond the basic ordering functionality:
 
-**If you've completed the core requirements and want to showcase additional skills:**
+### 📊 Analytics Dashboard
 
-- 🐳 **Docker**: Containerize the application with docker-compose
-- 📊 **Analytics**: Add order statistics or dashboard visualizations
-- 🔄 **Real-time Updates**: Implement WebSocket updates with Socket.IO
-- 🎨 **UX Polish**: Add animations, transitions, or advanced interactions
-- 🧪 **Testing**: Add unit or integration tests
-- 🔍 **Search/Filters**: Advanced filtering or search functionality
-- 📱 **Mobile-First**: Exceptional mobile responsiveness
-- ♿ **Accessibility**: ARIA labels and keyboard navigation
-- 🎯 **Your Idea**: Surprise us with something creative!
+Admins can view important application statistics including order trends and activity metrics.
 
-**Note:** A solid, clean implementation of core features is more valuable than rushed bonus features.
+### ⚡ Real-Time Updates
 
-## 📦 What's Included
+Implemented using Socket.io, enabling:
 
-This starter repository includes:
+    - Instant order status updates
+    - Real-time notifications for new orders
+    - Live synchronization between admin and user panels
 
-```
-restaunax-technical-assessment/
-├── backend/
-│   ├── src/
-│   │   ├── index.ts              # Express server setup
-│   │   ├── routes/
-│   │   │   └── orders.ts         # TODO: Implement your endpoints here
-│   │   └── data/
-│   │       └── mockOrders.ts     # Sample data (15 orders)
-│   ├── package.json
-│   └── tsconfig.json
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx               # TODO: Build your UI here
-│   │   ├── main.tsx
-│   │   └── services/
-│   │       └── api.ts            # TODO: Add API calls here
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
-└── shared/
-    └── types.ts                  # Shared TypeScript types
-```
+### 🔍 Table Search & Filters
 
-## 📤 Submission Instructions
-
-### 1. Push to Your Own Repository
-
-```bash
-# Remove the original remote
-git remote remove origin
-
-# Create a new repository on your GitHub account restaunax-assessment
-# Then add it as your remote
-git remote add origin https://github.com/YOUR_USERNAME/restaunax-assessment.git
-
-# Commit your changes
-git add .
-git commit -m "Complete Restaunax technical assessment"
-
-# Push to your repository
-git push -u origin main
-```
-
-### 2. Update the README
-
-Add a section to this README with:
-
-1. **Setup Instructions**: Clear steps to run your application
-2. **Implementation Notes**: Brief overview of your approach and architecture decisions
-3. **Design Decisions**: Explain key technical choices you made and why
-4. **Challenges**: Any interesting problems you solved or obstacles you encountered
-5. **Additional Features**: If you implemented bonus features or went beyond requirements, explain what and why
-
-### 3. Share Your Repository
-
-- Make sure your repository is **public** or invite `@Restaunax` as a collaborator
-- Send us the link to your repository
-- Ensure all your code is committed and pushed
-
-### 4. What NOT to Include
-
-- ❌ `node_modules/` folders (should be in .gitignore)
-- ❌ Environment files with secrets
-- ❌ Build artifacts (`dist/`, `build/`)
-- ❌ IDE-specific files (`.vscode/`, `.idea/`)
-
-## 💡 Tips for Success
-
-1. **Start Simple**: Get the core GET endpoints working first, then build from there
-2. **Use the Mock Data**: The provided mock data is ready to use - no need to set up a database unless you want to
-3. **Type Safety First**: Leverage the shared types between frontend and backend
-4. **Material-UI Docs**: Check out [MUI documentation](https://mui.com/) - their components are powerful
-5. **Be Creative**: Show us your design sensibilities and problem-solving approach
-6. **Test Your Work**: Make sure your implementation works end-to-end before submitting
-7. **Document Decisions**: Explain your thought process - we want to understand how you think
-
-## 🔧 Common Issues & Troubleshooting
-
-**Port already in use?**
-- Backend: Change port in `backend/src/index.ts`
-- Frontend: Change port in `frontend/vite.config.ts`
-
-**TypeScript errors?**
-- Make sure you're importing types from `../../shared/types`
-- Run `npm install` in both directories
-- Check that you're using Node.js 18+
-
-**Can't connect to API?**
-- Check backend is running on port 3000
-- Verify CORS is enabled (already configured)
-- Check browser console for errors
-
-**Build errors?**
-- Delete `node_modules` and `package-lock.json`, then run `npm install` again
-- Make sure both frontend and backend are using compatible TypeScript versions
-
-## 📁 Project Structure
-
-```
-.
-├── backend/
-│   ├── src/
-│   │   ├── index.ts              ✅ Express server configured
-│   │   ├── routes/orders.ts      🔨 IMPLEMENT THIS
-│   │   └── data/mockOrders.ts    ✅ 15 sample orders ready
-│   └── package.json              ✅ Dependencies configured
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx               🔨 BUILD YOUR UI HERE
-│   │   ├── main.tsx              ✅ React + MUI configured
-│   │   └── services/api.ts       🔨 ADD API CALLS HERE
-│   └── package.json              ✅ Dependencies configured
-└── shared/
-    └── types.ts                  ✅ Shared types for both ends
-```
-
-**Legend:**
-- ✅ Ready to use (no changes needed)
-- 🔨 Implement your solution here
-
-## ❓ Questions?
-
-If you have questions about the requirements, feel free to:
-
-- Make reasonable assumptions and document them in your README
-- Implement what makes sense based on your interpretation
-- Explain your decision-making process in your submission
-
----
-
-Good luck! We're excited to see what you build. 🚀
-
-**Remember**: We value clean, working code over fancy features. Focus on the fundamentals, and show us how you think and code.
+Admin tables include search and filtering capabilities, allowing quick access to specific orders or data.
