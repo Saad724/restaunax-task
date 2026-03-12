@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -30,6 +30,7 @@ const AppDrawer = () => {
   const socket = getSocket();
   const isMobile = useMediaQuery("(max-width:900px)");
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userInfo?.role === "admin") {
@@ -44,6 +45,7 @@ const AppDrawer = () => {
 
   const logoutHandler = () => {
     dispatch(logout());
+    navigate('/')
   };
 
   return (

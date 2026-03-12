@@ -99,6 +99,16 @@ email: admin@mail.com
 password: admin123
 ```
 
+### 4. Setup Database
+
+Setup your PostgreSQL database and provide database connection string in env file.
+
+After successfully setting up database, run db migrations by:
+
+```
+npx prisma migrate dev
+```
+
 ## 🏗 Implementation Notes
 
 ### 1. Backend Approach

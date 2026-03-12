@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { connectSocket } from "./socket/socket";
 import Dashboard from "./screens/admin/Dashboard/Dashboard";
 import MyOrders from "./screens/user/MyOrders/MyOrders";
+import NotFound from "./screens/public/NotFound/NotFound";
 
 const App = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -52,7 +53,7 @@ const App = () => {
             <Route path="order/:id" element={<Order />} />
           </Route>
         )}
-        <Route path="*" element={<>Route Not Found</>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
