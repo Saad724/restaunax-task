@@ -1,6 +1,6 @@
 ## 🍽️ Food Ordering Application Assessment
 
-A full-stack food ordering platform with separate User and Admin panels, built with a modern web stack.
+A full stack food ordering platform with separate User and Admin panels, built with a modern web stack.
 The application allows users to browse menu items, place orders, and track their order status, while administrators can manage orders and monitor application analytics in real time.
 
 ## 📦 Project Structure
@@ -15,7 +15,7 @@ root
 
 Frontend – Handles the user interface for both User and Admin panels.
 
-Backend – Provides APIs, authentication, database interaction, and real-time communication.
+Backend – Provides APIs, authentication, database interaction, and real time communication.
 
 ## ⚙️ How to Setup
 
@@ -81,9 +81,18 @@ npm run dev
 
 Once both servers are running, the application should be accessible in your browser.
 
+**Note: On successfull server run, admin seeder will be created automatically, however users need to be registered through signup process**
+
+**Admin Credentials**
+
+```
+email: admin@mail.com
+password: admin123
+```
+
 ## 🏗 Implementation Notes
 
-### Backend Approach
+### 1. Backend Approach
 The backend follows the MVC (Model–View–Controller) architecture to ensure maintainability and scalability.
 
 **Key implementation details:**
@@ -94,7 +103,7 @@ The backend follows the MVC (Model–View–Controller) architecture to ensure m
 - Input Validation
     - Request data is validated using Joi with Celebrate middleware to ensure data integrity and prevent malformed requests.
 
-- Controller-Based Logic
+- Controller Based Logic
     - Each feature is handled by dedicated controllers responsible for business logic.
 
 - Service Layer
@@ -102,7 +111,7 @@ The backend follows the MVC (Model–View–Controller) architecture to ensure m
 
 This layered architecture helps keep the backend modular, testable, and easy to extend.
 
-### Frontend Approach
+### 2. Frontend Approach
 
 The frontend is structured into two main panels:
 
@@ -129,45 +138,45 @@ When an order status is updated by the admin, the change is reflected in real ti
 
 Additionally:
 
-    When a new order is created, admins receive real-time notifications.
+    When a new order is created, admins receive real time notifications.
     Both panels are protected to ensure unauthorized users cannot access sensitive data.
 
 ## 🎨 Design Decisions
 
 The application's UI was intentionally designed to resemble a professional data management dashboard.
 
-### Design principles used:
+### 1. Design principles used:
 
     Minimalistic interface
     Clear data hierarchy
     Simple and intuitive navigation
     Focused user workflows
 
-### Benefits of this approach:
+### 2. Benefits of this approach:
 
     Faster user onboarding
     Reduced visual clutter
     Easier order tracking and management
     Improved usability for both admins and customers
 
-The clean dashboard-style design ensures the application feels professional, efficient, and easy to use.
+The clean dashboard style design ensures the application feels professional, efficient, and easy to use.
 
 ## 🚀 Additional Features
 
 The application includes several enhancements beyond the basic ordering functionality:
 
-### Analytics Dashboard
+### 1. Analytics Dashboard
 
 Admins can view important application statistics including order trends and activity metrics.
 
-### Real-Time Updates
+### 2. Real Time Updates
 
 Implemented using Socket.io, enabling:
 
     Instant order status updates
-    Real-time notifications for new orders
+    Real time notifications for new orders
     Live synchronization between admin and user panels for orders
 
-### Table Search & Filters
+### 3. Table Search & Filters
 
 Admin tables include search and filtering capabilities, allowing quick access to specific orders or data.
