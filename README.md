@@ -90,7 +90,7 @@ npm run dev
 
 Once both servers are running, the application should be accessible in your browser.
 
-**Note: On successfull server run, admin seeder will be created automatically, however users need to be registered through signup process**
+**Note: On successfull server run, admin seeder will be created automatically, however customers need to be registered through signup process**
 
 **Admin Credentials**
 
