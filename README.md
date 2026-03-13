@@ -70,7 +70,17 @@ VITE_API_URL=
 
 Fill these variables according to your environment.
 
-### 3. Run the Development Servers
+### 3. Setup Database
+
+Setup your PostgreSQL database and provide database connection string in env file.
+
+After successfully setting up database, run db migrations by:
+
+```
+npx prisma migrate dev
+```
+
+### 4. Run the Development Servers
 
 Start both frontend and backend servers.
 
@@ -97,16 +107,6 @@ Once both servers are running, the application should be accessible in your brow
 ```
 email: admin@mail.com
 password: admin123
-```
-
-### 4. Setup Database
-
-Setup your PostgreSQL database and provide database connection string in env file.
-
-After successfully setting up database, run db migrations by:
-
-```
-npx prisma migrate dev
 ```
 
 ## 🏗 Implementation Notes
